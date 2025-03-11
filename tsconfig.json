@@ -1,0 +1,33 @@
+{
+    "compilerOptions": {
+        "target": "ES2022",
+        "module": "NodeNext",
+        "moduleResolution": "NodeNext",
+        "strict": true,
+        "jsx": "preserve",
+        "resolveJsonModule": true,
+        "allowSyntheticDefaultImports": true,
+        "esModuleInterop": true,
+        "skipLibCheck": true,
+        "skipDefaultLibCheck": true,
+        "forceConsistentCasingInFileNames": true,
+        "noImplicitAny": false,
+        "allowJs": true,
+        "types": ["vite/client", "vuetify"],
+        "paths": {
+            "@/*": ["./src/*"]
+        },
+        "declaration": true,
+        "declarationDir": "./types",
+        "emitDeclarationOnly": false,
+        "outDir": "./dist",
+        "composite": true,
+        "tsBuildInfoFile": "./types/tsconfig.tsbuildinfo"
+    },
+    "include": ["src/**/*.ts", "src/**/*.vue", "src/env.d.ts"],
+    "exclude": ["node_modules", "dist", "types"],
+    "references": [
+        { "path": "./tsconfig.app.json" },
+        { "path": "./tsconfig.node.json" }
+    ]
+}
