@@ -2,20 +2,21 @@ import axios from 'axios'
 
 const API_URL =
     import.meta.env.MODE === 'development'
-        ? 'http://localhost:8000/api/'
-        : '/api/'
+        ? 'http://localhost:8000/api/' // Modo de desenvolvimento
+        : '/api/' // Produção ou Docker
 
 console.log(`[Axios Config] Ambiente: ${import.meta.env.MODE}`)
 console.log(`[Axios Config] Definindo baseURL como: ${API_URL}`)
 
+// Criando a instância do Axios com configuração base
 const api = axios.create({
     baseURL: API_URL,
     headers: {
         'Content-Type': 'application/json'
-    },
-    withCredentials: true
+    }
 })
 
+// Interceptador de requisição para adicionar o token JWT
 api.interceptors.request.use(
     config => {
         console.log(`[Axios Request] Iniciando requisição para ${config.url}`)
@@ -32,9 +33,10 @@ api.interceptors.request.use(
             console.warn('[Axios Request] Nenhum token encontrado')
         }
 
+        // Removendo manualmente o Content-Type para uploads de arquivos
         if (config.headers['Content-Type'] === 'multipart/form-data') {
             console.log(
-                '[Axios Request] Removendo Content-Type para upload de arquivo'
+                '[Axios Request] Upload detectado, ajustando headers...'
             )
             delete config.headers['Content-Type']
         }
@@ -47,6 +49,7 @@ api.interceptors.request.use(
     }
 )
 
+// Interceptador de resposta para tratamento de erros
 api.interceptors.response.use(
     response => {
         console.log(
@@ -59,34 +62,38 @@ api.interceptors.response.use(
         if (error.response) {
             const { status, config } = error.response
             console.error(
-                `[Axios Response] Erro na requisição para ${config.url}:`,
+                `[Axios Response] Erro ${status} na requisição para ${config.url}:`,
                 error.response
             )
 
             if (status === 401) {
                 console.warn(
-                    '[Axios Response] Token inválido ou expirado. Removendo token e redirecionando para login.'
+                    '[Axios Response] Token inválido ou expirado. Removendo e redirecionando para login.'
                 )
-                localStorage.removeItem('token')
-                sessionStorage.removeItem('token')
-                window.dispatchEvent(new Event('unauthorized'))
+
+                // Removendo token apenas se já estiver autenticado
+                if (localStorage.getItem('token')) {
+                    localStorage.removeItem('token')
+                    sessionStorage.removeItem('token')
+                    window.dispatchEvent(new Event('unauthorized'))
+                }
             } else if (status === 403) {
                 console.warn(
-                    '[Axios Response] Requisição bloqueada (403 Forbidden). Verifique CSRF ou permissões.'
+                    '[Axios Response] Acesso negado (403 Forbidden). Verifique permissões.'
                 )
             } else if (status === 500) {
                 console.error(
-                    `[Axios Response] Erro interno do servidor (${status}).`
+                    '[Axios Response] Erro interno do servidor (500).'
                 )
             }
         } else if (error.request) {
             console.error(
-                '[Axios Response] Nenhuma resposta recebida do servidor.',
+                '[Axios Response] Nenhuma resposta do servidor:',
                 error.request
             )
         } else {
             console.error(
-                '[Axios Response] Erro ao configurar a requisição.',
+                '[Axios Response] Erro ao configurar requisição:',
                 error.message
             )
         }

@@ -23,11 +23,18 @@
         }
 
         try {
-            await authStore.login(username.value, password.value)
-            console.log(
-                '[Login] Login bem-sucedido! Redirecionando para o dashboard...'
+            const success = await authStore.login(
+                username.value,
+                password.value
             )
-            router.push('/dashboard')
+            if (success) {
+                console.log(
+                    '[Login] Login bem-sucedido! Redirecionando para o dashboard...'
+                )
+                router.push('/dashboard')
+            } else {
+                errorMessage.value = 'Credenciais inválidas. Tente novamente.'
+            }
         } catch (error) {
             console.error('[Login] Erro ao fazer login:', error)
             errorMessage.value =

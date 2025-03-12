@@ -54,13 +54,6 @@
                         color="primary"
                         class="d-block mx-auto"
                     />
-                    <p class="text-caption text-center mt-2">
-                        {{
-                            isLoading
-                                ? 'Carregando perfil do usuário...'
-                                : 'Perfil carregado!'
-                        }}
-                    </p>
                 </v-sheet>
             </v-col>
 
@@ -76,13 +69,6 @@
                         color="primary"
                         class="d-block mx-auto"
                     />
-                    <p class="text-caption text-center mt-2">
-                        {{
-                            isLoading
-                                ? 'Carregando feed de tweets...'
-                                : 'Feed carregado!'
-                        }}
-                    </p>
                 </v-sheet>
             </v-col>
 
@@ -98,13 +84,6 @@
                         color="primary"
                         class="d-block mx-auto"
                     />
-                    <p class="text-caption text-center mt-2">
-                        {{
-                            isLoading
-                                ? 'Carregando lista de usuários...'
-                                : 'Lista carregada!'
-                        }}
-                    </p>
                 </v-sheet>
             </v-col>
         </v-row>

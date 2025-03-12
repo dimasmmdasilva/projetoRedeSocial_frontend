@@ -138,7 +138,7 @@
             <v-card-actions class="justify-center">
                 <p class="text-caption">
                     Já possui uma conta?
-                    <router-link to="/login">Entre por aqui</router-link>
+                    <router-link to="/login">Entre aqui</router-link>
                 </p>
             </v-card-actions>
         </v-card>

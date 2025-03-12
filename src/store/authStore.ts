@@ -24,7 +24,6 @@ export const useAuthStore = defineStore('auth', () => {
 
     const loadAuthFromStorage = () => {
         console.log('[AuthStore] Carregando autenticação do localStorage...')
-
         try {
             const storedUser = localStorage.getItem('user')
             const storedToken = localStorage.getItem('token')
@@ -35,10 +34,12 @@ export const useAuthStore = defineStore('auth', () => {
                 console.log('[AuthStore] Usuário carregado:', user.value)
             }
 
-            token.value = storedToken || ''
-            refreshTokenValue.value = storedRefreshToken || ''
+            if (storedToken) {
+                token.value = storedToken
+                setAuthHeader()
+            }
 
-            setAuthHeader()
+            refreshTokenValue.value = storedRefreshToken || ''
         } catch (error) {
             console.error('[AuthStore] Erro ao carregar autenticação:', error)
         }
@@ -55,7 +56,10 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
-    const login = async (username: string, password: string) => {
+    const login = async (
+        username: string,
+        password: string
+    ): Promise<boolean> => {
         console.log(`[AuthStore] Tentando login para usuário: ${username}`)
         isLoading.value = true
         errorMessage.value = ''
@@ -66,26 +70,19 @@ export const useAuthStore = defineStore('auth', () => {
                 password
             })
 
-            token.value = response.data.access || ''
-            refreshTokenValue.value = response.data.refresh || ''
-            user.value = {
-                ...response.data.user,
-                followers: response.data.user.followers || [],
-                followers_count: response.data.user.followers_count || 0,
-                profile_image: response.data.user.profile_image || '',
-                bio: response.data.user.bio || ''
-            }
+            if (response.data.access) {
+                token.value = response.data.access
+                refreshTokenValue.value = response.data.refresh || ''
+                user.value = response.data.user
 
-            if (token.value) {
                 localStorage.setItem('token', token.value)
                 localStorage.setItem('refresh_token', refreshTokenValue.value)
                 localStorage.setItem('user', JSON.stringify(user.value))
-                console.log(
-                    '[AuthStore] Login bem-sucedido! Token e usuário armazenados.'
-                )
-            }
 
-            setAuthHeader()
+                setAuthHeader()
+                console.log('[AuthStore] Login bem-sucedido!')
+                return true
+            }
         } catch (error: any) {
             errorMessage.value =
                 error.response?.data?.error || 'Usuário ou senha inválidos.'
@@ -93,54 +90,8 @@ export const useAuthStore = defineStore('auth', () => {
         } finally {
             isLoading.value = false
         }
-    }
 
-    const fetchUserData = async () => {
-        console.log('[AuthStore] Atualizando dados do usuário...')
-
-        if (!token.value) {
-            console.warn(
-                '[AuthStore] Nenhum token encontrado. Redirecionando para login...'
-            )
-            logout()
-            return
-        }
-
-        try {
-            const response = await api.get('/user/profile/')
-            user.value = response.data
-            localStorage.setItem('user', JSON.stringify(user.value))
-            console.log('[AuthStore] Dados do usuário atualizados:', user.value)
-        } catch (error) {
-            console.error('[AuthStore] Erro ao buscar dados do usuário:', error)
-            logout()
-        }
-    }
-
-    const refreshToken = async () => {
-        console.log('[AuthStore] Tentando atualizar token...')
-
-        if (!refreshTokenValue.value) {
-            console.warn(
-                '[AuthStore] Nenhum refresh token disponível. Deslogando...'
-            )
-            logout()
-            return
-        }
-
-        try {
-            const response = await api.post('/auth/token/refresh/', {
-                refresh: refreshTokenValue.value
-            })
-
-            token.value = response.data.access || ''
-            localStorage.setItem('token', token.value)
-            setAuthHeader()
-            console.log('[AuthStore] Token atualizado com sucesso!')
-        } catch (error) {
-            console.error('[AuthStore] Erro ao atualizar token:', error)
-            logout()
-        }
+        return false
     }
 
     const logout = async () => {
@@ -164,27 +115,10 @@ export const useAuthStore = defineStore('auth', () => {
         setAuthHeader()
         console.log('[AuthStore] Usuário deslogado e tokens removidos.')
 
-        window.location.href = '/login'
+        setTimeout(() => {
+            window.location.href = '/login'
+        }, 300)
     }
-
-    api.interceptors.response.use(
-        response => response,
-        async error => {
-            if (
-                error.response?.status === 401 &&
-                refreshTokenValue.value &&
-                error.config &&
-                !error.config._retry
-            ) {
-                console.warn('[AuthStore] Token expirado! Tentando renovar...')
-                error.config._retry = true
-                await refreshToken()
-                return api(error.config)
-            }
-            console.error('[AuthStore] Erro na requisição:', error)
-            return Promise.reject(error)
-        }
-    )
 
     loadAuthFromStorage()
 
@@ -195,8 +129,6 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading,
         errorMessage,
         login,
-        logout,
-        refreshToken,
-        fetchUserData
+        logout
     }
 })
