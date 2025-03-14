@@ -8,7 +8,7 @@
 
     const user = computed(() => authStore.user || null)
 
-    const fileInput = ref(null)
+    const fileInput = (ref < HTMLInputElement) | (null > null)
     const newBio = ref('')
     const isEditingBio = ref(false)
     const isSaving = computed(() => profileStore.isLoading)
@@ -54,7 +54,6 @@
         authStore.logout()
     }
 
-    // Log ao montar o componente
     onMounted(() => {
         console.log('[UserProfile] Perfil carregado:', user.value)
     })
@@ -67,7 +66,7 @@
         color="blue-lighten-4"
     >
         <v-avatar
-            size="120"
+            size="170"
             class="mb-4 mt-6"
             @click="triggerFileUpload"
             color="blue-lighten-3"
@@ -157,3 +156,12 @@
         </v-card-actions>
     </v-card>
 </template>
+
+<style scoped>
+    .v-avatar img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+        border-radius: 50%;
+    }
+</style>

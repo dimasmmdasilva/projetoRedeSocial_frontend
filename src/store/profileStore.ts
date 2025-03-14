@@ -18,9 +18,7 @@ export const useProfileStore = defineStore('profile', () => {
             return false
         }
 
-        console.log(
-            '[ProfileStore] Iniciando atualização da imagem de perfil...'
-        )
+        console.log('[ProfileStore] Atualizando imagem de perfil...')
         isLoading.value = true
         errorMessage.value = ''
         successMessage.value = ''
@@ -29,11 +27,8 @@ export const useProfileStore = defineStore('profile', () => {
         formData.append('profile_image', imageFile)
 
         try {
-            console.log(
-                '[ProfileStore] Enviando requisição para atualização da imagem de perfil...'
-            )
             const response = await api.put(
-                '/api/user/profile-image/',
+                '/user/update-profile-image/',
                 formData,
                 {
                     headers: { 'Content-Type': 'multipart/form-data' }
@@ -46,47 +41,32 @@ export const useProfileStore = defineStore('profile', () => {
             }
 
             successMessage.value = 'Imagem de perfil atualizada com sucesso!'
-            console.log(
-                '[ProfileStore] Imagem de perfil atualizada:',
-                response.data.profile_image
-            )
             return true
         } catch (error: any) {
-            console.error(
-                '[ProfileStore] Erro ao atualizar a imagem:',
-                error.response?.status,
-                error.response?.data
-            )
             errorMessage.value =
                 error.response?.data?.detail ||
                 'Erro ao atualizar a imagem do perfil.'
+            console.error('[ProfileStore] Erro no upload:', error.response)
             return false
         } finally {
             isLoading.value = false
-            console.log(
-                '[ProfileStore] Finalizado processo de atualização da imagem de perfil.'
-            )
         }
     }
 
-    const updateBio = async (bio: string): Promise<boolean> => {
-        if (!bio.trim()) {
+    const updateBio = async (newBio: string): Promise<boolean> => {
+        if (!newBio.trim()) {
             console.warn(
-                '[ProfileStore] Tentativa de atualização com biografia vazia.'
+                '[ProfileStore] Tentativa de atualizar biografia com texto vazio.'
             )
             return false
         }
 
-        console.log(`[ProfileStore] Atualizando biografia para: "${bio}"`)
         isLoading.value = true
         errorMessage.value = ''
         successMessage.value = ''
 
         try {
-            console.log(
-                '[ProfileStore] Enviando requisição para atualização da biografia...'
-            )
-            const response = await api.put('/api/user/update-bio/', { bio })
+            const response = await api.put('/user/update-bio/', { bio: newBio })
 
             if (authStore.user) {
                 authStore.user.bio = response.data.bio
@@ -94,25 +74,17 @@ export const useProfileStore = defineStore('profile', () => {
             }
 
             successMessage.value = 'Biografia atualizada com sucesso!'
-            console.log(
-                '[ProfileStore] Biografia atualizada:',
-                response.data.bio
-            )
             return true
         } catch (error: any) {
-            console.error(
-                '[ProfileStore] Erro ao atualizar biografia:',
-                error.response?.status,
-                error.response?.data
-            )
             errorMessage.value =
                 error.response?.data?.detail || 'Erro ao atualizar a biografia.'
+            console.error(
+                '[ProfileStore] Erro ao atualizar bio:',
+                error.response
+            )
             return false
         } finally {
             isLoading.value = false
-            console.log(
-                '[ProfileStore] Finalizado processo de atualização da biografia.'
-            )
         }
     }
 
