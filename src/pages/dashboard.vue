@@ -40,12 +40,19 @@
 </script>
 
 <template>
-    <v-container fluid class="h-screen overflow-hidden pa-0 ma-0">
+    <v-container
+        fluid
+        class="h-screen w-100 overflow-y-auto overflow-x-hidden pa-0 ma-0"
+    >
         <v-row class="fill-height d-flex justify-center">
-            <v-col cols="12" md="3" lg="3" class="pa-1">
-                <v-sheet color="white">
+            <!-- Perfil do Usuário -->
+            <v-col cols="12" md="3" lg="3" class="pa-1 d-flex flex-column">
+                <v-sheet color="white" class="flex-grow-1 d-flex w-100">
                     <template v-if="!isLoading && authStore.user">
-                        <UserProfile :userProfile="authStore.user" />
+                        <UserProfile
+                            :userProfile="authStore.user"
+                            class="flex-grow-1 w-100"
+                        />
                     </template>
                     <v-progress-circular
                         v-else
@@ -56,8 +63,9 @@
                 </v-sheet>
             </v-col>
 
-            <v-col cols="12" md="7" lg="7" class="pa-1">
-                <v-sheet color="white" elevation="3">
+            <!-- Feed de Tweets -->
+            <v-col cols="12" md="7" lg="7" class="pa-1 d-flex flex-column">
+                <v-sheet color="white" elevation="3" class="w-100">
                     <template v-if="!isLoading">
                         <TweetFeed />
                     </template>
@@ -70,8 +78,9 @@
                 </v-sheet>
             </v-col>
 
-            <v-col cols="12" md="2" lg="2" class="pa-1">
-                <v-sheet color="white">
+            <!-- Lista de Usuários -->
+            <v-col cols="12" md="2" lg="2" class="pa-1 d-flex flex-column">
+                <v-sheet color="white" class="w-100">
                     <template v-if="!isLoading">
                         <UserList />
                     </template>

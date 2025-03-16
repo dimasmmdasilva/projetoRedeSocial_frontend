@@ -56,7 +56,7 @@
 
 <template>
     <v-card
-        class="fill-height d-flex flex-column align-center pa-6"
+        class="d-flex flex-column align-center pa-6 flex-grow-1"
         elevation="3"
         color="blue-lighten-4"
     >
@@ -94,7 +94,7 @@
 
         <v-card-text class="text-center w-100">
             <p v-if="!isEditingBio" class="text-caption font-italic">
-                "{{ user?.bio || 'Escreva sobre você' }}"
+                "{{ user?.bio || 'Escreva sobre você' }} "
             </p>
 
             <v-textarea
@@ -140,7 +140,9 @@
             </div>
         </v-card-text>
 
-        <v-card-actions class="mt-auto">
+        <v-spacer></v-spacer>
+
+        <v-card-actions>
             <v-btn
                 color="red-darken-2"
                 class="white--text"
