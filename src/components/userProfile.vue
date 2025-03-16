@@ -8,49 +8,44 @@
 
     const user = computed(() => authStore.user || null)
 
-    const fileInput = (ref < HTMLInputElement) | (null > null)
+    const fileInput = ref(null)
     const newBio = ref('')
     const isEditingBio = ref(false)
     const isSaving = computed(() => profileStore.isLoading)
 
     const triggerFileUpload = () => {
-        console.log('[UserProfile] Iniciando upload de imagem...')
-        fileInput.value?.click()
+        if (fileInput.value) {
+            fileInput.value.click()
+        }
     }
 
     const uploadImage = event => {
-        const file = event.target.files[0]
+        const target = event.target
+        const file = target.files ? target.files[0] : null
+
         if (file) {
-            console.log('[UserProfile] Arquivo selecionado:', file.name)
             profileStore.updateProfileImage(file)
-        } else {
-            console.warn('[UserProfile] Nenhum arquivo selecionado.')
         }
     }
 
     const editBio = () => {
-        console.log('[UserProfile] Iniciando edição da biografia...')
         newBio.value = user.value?.bio || ''
         isEditingBio.value = true
     }
 
     const confirmEditBio = async () => {
         if (!newBio.value.trim()) {
-            console.warn('[UserProfile] Biografia vazia, edição cancelada.')
             return
         }
-        console.log('[UserProfile] Salvando nova biografia:', newBio.value)
         await profileStore.updateBio(newBio.value)
         isEditingBio.value = false
     }
 
     const cancelEditBio = () => {
-        console.log('[UserProfile] Edição da biografia cancelada.')
         isEditingBio.value = false
     }
 
     const handleLogout = () => {
-        console.log('[UserProfile] Usuário deslogando...')
         authStore.logout()
     }
 
@@ -67,14 +62,15 @@
     >
         <v-avatar
             size="170"
-            class="mb-4 mt-6"
+            class="mb-4 mt-6 cursor-pointer"
             @click="triggerFileUpload"
-            color="blue-lighten-3"
         >
             <img
                 v-if="user?.profile_image"
                 :src="user.profile_image"
                 alt="Imagem de perfil"
+                class="w-100 h-100 rounded-circle"
+                style="object-fit: cover"
                 @error="user.profile_image = ''"
             />
             <v-icon v-else size="60">mdi-account</v-icon>
@@ -156,12 +152,3 @@
         </v-card-actions>
     </v-card>
 </template>
-
-<style scoped>
-    .v-avatar img {
-        width: 100%;
-        height: 100%;
-        object-fit: cover;
-        border-radius: 50%;
-    }
-</style>

@@ -42,7 +42,6 @@
 <template>
     <v-container fluid class="h-screen overflow-hidden pa-0 ma-0">
         <v-row class="fill-height d-flex justify-center">
-            <!-- Perfil do Usuário -->
             <v-col cols="12" md="3" lg="3" class="pa-1">
                 <v-sheet color="white">
                     <template v-if="!isLoading && authStore.user">
@@ -57,7 +56,6 @@
                 </v-sheet>
             </v-col>
 
-            <!-- Feed de Tweets -->
             <v-col cols="12" md="7" lg="7" class="pa-1">
                 <v-sheet color="white" elevation="3">
                     <template v-if="!isLoading">
@@ -72,7 +70,6 @@
                 </v-sheet>
             </v-col>
 
-            <!-- Lista de Usuários -->
             <v-col cols="12" md="2" lg="2" class="pa-1">
                 <v-sheet color="white">
                     <template v-if="!isLoading">

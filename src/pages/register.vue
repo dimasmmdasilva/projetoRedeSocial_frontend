@@ -47,8 +47,7 @@
             )
 
             if (success) {
-                successMessage.value =
-                    'Cadastro realizado com sucesso! Redirecionando...'
+                successMessage.value = 'Cadastro realizado com sucesso!'
                 console.log(
                     '[Cadastro] Usuário cadastrado com sucesso! Redirecionando para login...'
                 )
@@ -57,7 +56,7 @@
                     router.push('/login')
                 }, 1500)
             } else {
-                errorMessage.value = 'Erro ao cadastrar. Tente novamente.'
+                errorMessage.value = 'Erro ao cadastrar.'
             }
         } catch (error) {
             console.error('[Cadastro] Erro ao cadastrar:', error)

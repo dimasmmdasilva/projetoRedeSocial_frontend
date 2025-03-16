@@ -3,8 +3,6 @@ import { ref } from 'vue'
 import api from '../config/axiosConfig.js'
 import { useAuthStore } from './authStore.js'
 
-console.log('[ProfileStore] Inicializando Profile Store...')
-
 export const useProfileStore = defineStore('profile', () => {
     const authStore = useAuthStore()
 
@@ -18,7 +16,6 @@ export const useProfileStore = defineStore('profile', () => {
             return false
         }
 
-        console.log('[ProfileStore] Atualizando imagem de perfil...')
         isLoading.value = true
         errorMessage.value = ''
         successMessage.value = ''
@@ -42,11 +39,19 @@ export const useProfileStore = defineStore('profile', () => {
 
             successMessage.value = 'Imagem de perfil atualizada com sucesso!'
             return true
-        } catch (error: any) {
-            errorMessage.value =
-                error.response?.data?.detail ||
-                'Erro ao atualizar a imagem do perfil.'
-            console.error('[ProfileStore] Erro no upload:', error.response)
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                errorMessage.value = error.message
+            } else if (
+                typeof error === 'object' &&
+                error !== null &&
+                'response' in error
+            ) {
+                errorMessage.value =
+                    (error as any).response?.data?.detail ||
+                    'Erro ao atualizar a imagem do perfil.'
+            }
+            console.error('[ProfileStore] Erro no upload:', error)
             return false
         } finally {
             isLoading.value = false
@@ -75,13 +80,19 @@ export const useProfileStore = defineStore('profile', () => {
 
             successMessage.value = 'Biografia atualizada com sucesso!'
             return true
-        } catch (error: any) {
-            errorMessage.value =
-                error.response?.data?.detail || 'Erro ao atualizar a biografia.'
-            console.error(
-                '[ProfileStore] Erro ao atualizar bio:',
-                error.response
-            )
+        } catch (error: unknown) {
+            if (error instanceof Error) {
+                errorMessage.value = error.message
+            } else if (
+                typeof error === 'object' &&
+                error !== null &&
+                'response' in error
+            ) {
+                errorMessage.value =
+                    (error as any).response?.data?.detail ||
+                    'Erro ao atualizar a biografia.'
+            }
+            console.error('[ProfileStore] Erro ao atualizar bio:', error)
             return false
         } finally {
             isLoading.value = false
