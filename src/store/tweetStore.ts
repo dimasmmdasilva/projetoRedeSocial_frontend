@@ -22,17 +22,15 @@ export const useTweetStore = defineStore('tweet', () => {
     const isLoading = ref(false)
     const errorMessage = ref('')
 
-    // Sincroniza tweets no localStorage apenas quando há mudanças
+    // Sincroniza tweets no localStorage quando há mudanças
     watch(
         tweets,
         newTweets => {
-            if (newTweets.length) {
-                console.log(
-                    '[TweetStore] Atualizando localStorage com novos tweets:',
-                    newTweets
-                )
-                localStorage.setItem('tweets', JSON.stringify(newTweets))
-            }
+            console.log(
+                '[TweetStore] Atualizando localStorage com novos tweets:',
+                newTweets
+            )
+            localStorage.setItem('tweets', JSON.stringify(newTweets))
         },
         { deep: true }
     )
@@ -44,23 +42,22 @@ export const useTweetStore = defineStore('tweet', () => {
 
         try {
             const response = await api.get<Tweet[]>('/tweets/following/')
-            tweets.value = response.data
+
+            if (response.data.length) {
+                tweets.value = response.data
+                localStorage.setItem('tweets', JSON.stringify(response.data))
+            }
 
             console.log(
-                `[TweetStore] Tweets carregados com sucesso (${response.data.length} tweets)`
+                `[TweetStore] ${response.data.length} tweets carregados.`
             )
-
-            // Salva os tweets no localStorage apenas se a resposta for válida
-            localStorage.setItem('tweets', JSON.stringify(response.data))
 
             return true
         } catch (error: any) {
             console.error('[TweetStore] Erro ao buscar tweets:', error)
 
             errorMessage.value =
-                error.response?.data?.detail ||
-                'Erro ao carregar tweets. Tente novamente mais tarde.'
-
+                error.response?.data?.message || 'Erro ao carregar tweets.'
             return false
         } finally {
             isLoading.value = false
@@ -81,6 +78,7 @@ export const useTweetStore = defineStore('tweet', () => {
         try {
             const response = await api.post<Tweet>('/tweets/', { content })
             tweets.value.unshift(response.data)
+            localStorage.setItem('tweets', JSON.stringify(tweets.value))
 
             console.log('[TweetStore] Tweet criado com sucesso:', response.data)
             return true
@@ -88,12 +86,38 @@ export const useTweetStore = defineStore('tweet', () => {
             console.error('[TweetStore] Erro ao criar tweet:', error)
 
             errorMessage.value =
-                error.response?.data?.detail || 'Erro ao criar tweet.'
-
+                error.response?.data?.message || 'Erro ao criar tweet.'
             return false
         } finally {
             isLoading.value = false
             console.log('[TweetStore] Finalizado processo de criação de tweet.')
+        }
+    }
+
+    const deleteTweet = async (tweetId: number): Promise<boolean> => {
+        console.log(`[TweetStore] Tentando excluir tweet ID ${tweetId}`)
+
+        const tweetIndex = tweets.value.findIndex(t => t.id === tweetId)
+        if (tweetIndex === -1) {
+            console.warn('[TweetStore] Tweet não encontrado:', tweetId)
+            return false
+        }
+
+        try {
+            await api.delete(`/tweets/${tweetId}/`)
+            tweets.value.splice(tweetIndex, 1)
+            localStorage.setItem('tweets', JSON.stringify(tweets.value))
+
+            console.log(
+                `[TweetStore] Tweet ID ${tweetId} excluído com sucesso.`
+            )
+            return true
+        } catch (error: any) {
+            console.error('[TweetStore] Erro ao excluir tweet:', error)
+
+            errorMessage.value =
+                error.response?.data?.message || 'Erro ao excluir tweet.'
+            return false
         }
     }
 
@@ -106,7 +130,6 @@ export const useTweetStore = defineStore('tweet', () => {
             return false
         }
 
-        // Atualiza UI imediatamente antes da chamada à API
         tweet.is_liked = !tweet.is_liked
         tweet.likes_count += tweet.is_liked ? 1 : -1
 
@@ -122,10 +145,9 @@ export const useTweetStore = defineStore('tweet', () => {
             console.error('[TweetStore] Erro ao curtir/descurtir tweet:', error)
 
             errorMessage.value =
-                error.response?.data?.detail ||
+                error.response?.data?.message ||
                 'Erro ao curtir/descurtir o tweet.'
 
-            // Reverte UI em caso de erro
             tweet.is_liked = !tweet.is_liked
             tweet.likes_count += tweet.is_liked ? 1 : -1
 
@@ -139,6 +161,7 @@ export const useTweetStore = defineStore('tweet', () => {
         errorMessage,
         fetchFollowingTweets,
         createTweet,
+        deleteTweet,
         toggleLike
     }
 })

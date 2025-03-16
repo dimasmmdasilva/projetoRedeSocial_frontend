@@ -10,14 +10,18 @@
 
     const hasTweets = computed(() => tweets.value.length > 0)
 
-    onMounted(async () => {
-        console.log('[TweetFeed] Iniciando carregamento de tweets...')
+    const loadTweets = async () => {
+        console.log('[TweetFeed] Carregando tweets...')
         try {
             await tweetStore.fetchFollowingTweets()
             console.log(`[TweetFeed] ${tweets.value.length} tweets carregados.`)
         } catch (error) {
             console.error('[TweetFeed] Erro ao carregar tweets:', error)
         }
+    }
+
+    onMounted(() => {
+        loadTweets()
     })
 </script>
 
@@ -25,6 +29,15 @@
     <v-container fluid class="d-flex flex-column align-center">
         <TweetForm />
         <v-divider class="my-4" />
+
+        <v-btn
+            color="primary"
+            class="mb-3"
+            :disabled="isLoading"
+            @click="loadTweets"
+        >
+            {{ isLoading ? 'Atualizando...' : 'Atualizar Feed' }}
+        </v-btn>
 
         <v-list max-width="600px" class="w-100">
             <template v-if="hasTweets">

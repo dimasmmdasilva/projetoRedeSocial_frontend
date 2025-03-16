@@ -6,6 +6,7 @@
     const newTweetContent = ref('')
     const errorMessage = ref('')
     const successMessage = ref('')
+    const isProcessing = ref(false)
 
     const handleCreateTweet = async () => {
         console.log('[CreateTweet] Tentando criar um tweet...')
@@ -18,20 +19,28 @@
 
         errorMessage.value = ''
         successMessage.value = ''
+        isProcessing.value = true
 
         try {
             console.log(
                 `[CreateTweet] Enviando tweet: "${newTweetContent.value}"`
             )
-            await tweetStore.createTweet(newTweetContent.value)
-            console.log('[CreateTweet] Tweet enviado com sucesso!')
+            const success = await tweetStore.createTweet(newTweetContent.value)
 
-            newTweetContent.value = ''
-            successMessage.value = 'Tweet publicado com sucesso!'
+            if (success) {
+                newTweetContent.value = ''
+                successMessage.value = 'Tweet publicado com sucesso!'
+                console.log('[CreateTweet] Tweet enviado com sucesso!')
+            } else {
+                errorMessage.value =
+                    'Falha ao publicar o tweet. Tente novamente.'
+            }
         } catch (error) {
             console.error('[CreateTweet] Erro ao criar tweet:', error)
             errorMessage.value =
                 error.response?.data?.message || 'Erro ao enviar tweet.'
+        } finally {
+            isProcessing.value = false
         }
     }
 </script>
@@ -62,11 +71,11 @@
 
             <v-btn
                 color="primary"
-                :disabled="tweetStore.isLoading || !newTweetContent.trim()"
+                :disabled="isProcessing || !newTweetContent.trim()"
                 class="mt-2 w-25"
                 @click="handleCreateTweet"
             >
-                {{ tweetStore.isLoading ? 'Enviando...' : 'Tweetar' }}
+                {{ isProcessing ? 'Enviando...' : 'Tweetar' }}
             </v-btn>
         </v-card-text>
     </v-card>

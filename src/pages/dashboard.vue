@@ -1,6 +1,7 @@
 <script setup>
     import { ref, computed, onMounted } from 'vue'
     import { useAuthStore } from '../store/authStore'
+    import { useTweetStore } from '../store/tweetStore'
     import { useRouter } from 'vue-router'
 
     import UserProfile from '../components/userProfile.vue'
@@ -8,6 +9,7 @@
     import UserList from '../components/userList.vue'
 
     const authStore = useAuthStore()
+    const tweetStore = useTweetStore()
     const router = useRouter()
 
     const isLoading = ref(true)
@@ -34,6 +36,14 @@
                         error
                     )
                 }
+            }
+
+            // NOVO: Carregar os tweets após a autenticação
+            console.log('[Dashboard] Carregando tweets do usuário...')
+            try {
+                await tweetStore.fetchFollowingTweets()
+            } catch (error) {
+                console.error('[Dashboard] Erro ao carregar tweets:', error)
             }
 
             isLoading.value = false
