@@ -23,18 +23,20 @@
             router.push('/login')
         } else {
             console.log('[Dashboard] Usuário autenticado:', authStore.user)
-            console.log('[Dashboard] Carregando dados do usuário...')
 
-            try {
-                await authStore.fetchUserData()
-            } catch (error) {
-                console.error(
-                    '[Dashboard] Erro ao carregar dados do usuário:',
-                    error
-                )
-            } finally {
-                isLoading.value = false
+            if (!authStore.user) {
+                console.log('[Dashboard] Carregando dados do usuário...')
+                try {
+                    await authStore.fetchUserData()
+                } catch (error) {
+                    console.error(
+                        '[Dashboard] Erro ao carregar dados do usuário:',
+                        error
+                    )
+                }
             }
+
+            isLoading.value = false
         }
     })
 </script>

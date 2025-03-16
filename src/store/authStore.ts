@@ -56,6 +56,25 @@ export const useAuthStore = defineStore('auth', () => {
         }
     }
 
+    const fetchUserData = async () => {
+        if (!token.value) {
+            console.warn(
+                '[AuthStore] Nenhum token disponível. Usuário não autenticado.'
+            )
+            return
+        }
+
+        console.log('[AuthStore] Buscando dados do usuário na API...')
+        try {
+            const response = await api.get('/user/detail/') // <- Corrigida a rota
+            user.value = response.data
+            localStorage.setItem('user', JSON.stringify(user.value))
+            console.log('[AuthStore] Dados do usuário atualizados:', user.value)
+        } catch (error) {
+            console.error('[AuthStore] Erro ao buscar dados do usuário:', error)
+        }
+    }
+
     const login = async (
         username: string,
         password: string
@@ -81,6 +100,7 @@ export const useAuthStore = defineStore('auth', () => {
 
                 setAuthHeader()
                 console.log('[AuthStore] Login bem-sucedido!')
+                await fetchUserData() // <- Garante que os dados do usuário sejam atualizados no login
                 return true
             }
         } catch (error: any) {
@@ -129,6 +149,7 @@ export const useAuthStore = defineStore('auth', () => {
         isLoading,
         errorMessage,
         login,
-        logout
+        logout,
+        fetchUserData
     }
 })
