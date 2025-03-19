@@ -1,4 +1,5 @@
 import axios from 'axios'
+import { useAuthStore } from '../store/authStore.js'
 
 const API_URL =
     import.meta.env.MODE === 'development'
@@ -21,8 +22,7 @@ api.interceptors.request.use(
     config => {
         console.log(`[Axios Request] Iniciando requisição para ${config.url}`)
 
-        const token =
-            localStorage.getItem('token') || sessionStorage.getItem('token')
+        const token = localStorage.getItem('token')
 
         if (token) {
             console.log(
@@ -49,6 +49,32 @@ api.interceptors.request.use(
     }
 )
 
+// Função para tentar renovar o token
+const refreshToken = async () => {
+    const refreshToken = localStorage.getItem('refresh_token')
+    if (!refreshToken) {
+        console.warn('[Axios] Nenhum refresh token encontrado.')
+        return null
+    }
+
+    try {
+        console.log('[Axios] Tentando renovar o token...')
+        const response = await axios.post(`${API_URL}auth/refresh/`, {
+            refresh: refreshToken
+        })
+
+        if (response.data.access) {
+            console.log('[Axios] Token renovado com sucesso!')
+            localStorage.setItem('token', response.data.access)
+            return response.data.access
+        }
+    } catch (error) {
+        console.error('[Axios] Erro ao renovar o token:', error)
+    }
+
+    return null
+}
+
 // Interceptador de resposta para tratamento de erros
 api.interceptors.response.use(
     response => {
@@ -58,7 +84,7 @@ api.interceptors.response.use(
         )
         return response
     },
-    error => {
+    async error => {
         if (error.response) {
             const { status, config } = error.response
             console.error(
@@ -68,15 +94,25 @@ api.interceptors.response.use(
 
             if (status === 401) {
                 console.warn(
-                    '[Axios Response] Token inválido ou expirado. Removendo e redirecionando para login.'
+                    '[Axios Response] Token expirado. Tentando renovar...'
                 )
 
-                // Removendo token apenas se já estiver autenticado
-                if (localStorage.getItem('token')) {
-                    localStorage.removeItem('token')
-                    sessionStorage.removeItem('token')
-                    window.dispatchEvent(new Event('unauthorized'))
+                const newToken = await refreshToken()
+                if (newToken) {
+                    console.log(
+                        '[Axios Response] Reenviando a requisição com o novo token.'
+                    )
+                    error.config.headers['Authorization'] = `Bearer ${newToken}`
+                    return api(error.config)
                 }
+
+                console.warn(
+                    '[Axios Response] Token inválido ou expirado. Redirecionando para login.'
+                )
+
+                // Se o token não puder ser renovado, força logout
+                const authStore = useAuthStore()
+                authStore.logout()
             } else if (status === 403) {
                 console.warn(
                     '[Axios Response] Acesso negado (403 Forbidden). Verifique permissões.'

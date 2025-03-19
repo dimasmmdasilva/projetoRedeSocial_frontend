@@ -25,20 +25,21 @@
     const handleFollow = async userId => {
         console.log(`[UserList] Tentando seguir usuário ID ${userId}`)
 
-        if (followStore.isFollowing(userId)) {
+        if (!followStore.isFollowing(userId)) {
+            try {
+                await followStore.toggleFollow(userId)
+                console.log(
+                    `[UserList] Usuário ID ${userId} seguido com sucesso!`
+                )
+            } catch (error) {
+                console.error(
+                    `[UserList] Erro ao seguir usuário ID ${userId}:`,
+                    error
+                )
+            }
+        } else {
             alertMessage.value = 'Você quer parar de seguir essa pessoa?'
             selectedUserId.value = userId
-            return
-        }
-
-        try {
-            await followStore.toggleFollow(userId)
-            console.log(`[UserList] Usuário ID ${userId} seguido com sucesso!`)
-        } catch (error) {
-            console.error(
-                `[UserList] Erro ao seguir usuário ID ${userId}:`,
-                error
-            )
         }
     }
 
@@ -46,9 +47,8 @@
         if (!selectedUserId.value) return
 
         console.log(
-            `[UserList] Tentando parar de seguir usuário ID ${selectedUserId.value}`
+            `[UserList] Parando de seguir usuário ID ${selectedUserId.value}`
         )
-
         try {
             await followStore.toggleFollow(selectedUserId.value)
             console.log(
@@ -98,11 +98,9 @@
                     />
                 </v-avatar>
 
-                <v-list-item-content>
-                    <v-list-item-title class="font-weight-bold">
-                        {{ user.username }}
-                    </v-list-item-title>
-                </v-list-item-content>
+                <v-list-item-title class="font-weight-bold">
+                    {{ user.username }}
+                </v-list-item-title>
 
                 <v-btn
                     v-if="!isFollowing(user.id)"
@@ -123,8 +121,6 @@
                 >
                     Seguindo
                 </v-btn>
-
-                <v-divider class="mt-2"></v-divider>
             </v-list-item>
         </v-list>
 

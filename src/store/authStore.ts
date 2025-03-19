@@ -26,20 +26,19 @@ export const useAuthStore = defineStore('auth', () => {
         console.log('[AuthStore] Carregando autenticação do localStorage...')
         try {
             const storedUser = localStorage.getItem('user')
-            const storedToken = localStorage.getItem('token')
-            const storedRefreshToken = localStorage.getItem('refresh_token')
+            const storedToken = localStorage.getItem('token') ?? ''
+            const storedRefreshToken =
+                localStorage.getItem('refresh_token') ?? ''
 
             if (storedUser) {
                 user.value = JSON.parse(storedUser)
                 console.log('[AuthStore] Usuário carregado:', user.value)
             }
 
-            if (storedToken) {
-                token.value = storedToken
-                setAuthHeader()
-            }
+            token.value = storedToken
+            refreshTokenValue.value = storedRefreshToken
 
-            refreshTokenValue.value = storedRefreshToken || ''
+            setAuthHeader()
         } catch (error) {
             console.error('[AuthStore] Erro ao carregar autenticação:', error)
         }
@@ -66,7 +65,7 @@ export const useAuthStore = defineStore('auth', () => {
 
         console.log('[AuthStore] Buscando dados do usuário na API...')
         try {
-            const response = await api.get('/user/detail/') // <- Corrigida a rota
+            const response = await api.get('/user/detail/')
             user.value = response.data
             localStorage.setItem('user', JSON.stringify(user.value))
             console.log('[AuthStore] Dados do usuário atualizados:', user.value)
@@ -90,8 +89,8 @@ export const useAuthStore = defineStore('auth', () => {
             })
 
             if (response.data.access) {
-                token.value = response.data.access
-                refreshTokenValue.value = response.data.refresh || ''
+                token.value = response.data.access ?? ''
+                refreshTokenValue.value = response.data.refresh ?? ''
                 user.value = response.data.user
 
                 localStorage.setItem('token', token.value)
@@ -100,7 +99,7 @@ export const useAuthStore = defineStore('auth', () => {
 
                 setAuthHeader()
                 console.log('[AuthStore] Login bem-sucedido!')
-                await fetchUserData() // <- Garante que os dados do usuário sejam atualizados no login
+                await fetchUserData()
                 return true
             }
         } catch (error: any) {

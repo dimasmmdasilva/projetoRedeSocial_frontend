@@ -47,7 +47,7 @@
             )
 
             if (success) {
-                successMessage.value = 'Cadastro realizado com sucesso!'
+                successMessage.value = 'Cadastrado com sucesso!'
                 console.log(
                     '[Cadastro] Usuário cadastrado com sucesso! Redirecionando para login...'
                 )

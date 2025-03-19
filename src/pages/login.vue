@@ -33,7 +33,7 @@
                 )
                 router.push('/dashboard')
             } else {
-                errorMessage.value = 'Credenciais inválidas. Tente novamente.'
+                errorMessage.value = 'Credenciais inválidas.'
             }
         } catch (error) {
             console.error('[Login] Erro ao fazer login:', error)

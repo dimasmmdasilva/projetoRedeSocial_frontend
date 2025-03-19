@@ -26,13 +26,13 @@
 </script>
 
 <template>
-    <v-container fluid class="d-flex flex-column align-center">
+    <v-container fluid class="d-flex flex-column align-center mt-4">
         <TweetForm />
         <v-divider class="my-4" />
 
         <v-btn
             color="primary"
-            class="mb-3"
+            class="mb-6"
             :disabled="isLoading"
             @click="loadTweets"
         >
@@ -50,16 +50,15 @@
         </v-list>
 
         <p v-if="isLoading && !hasTweets" class="text-center mt-4">
-            [TweetFeed] Carregando tweets...
+            Carregando tweets...
         </p>
 
         <p v-if="!isLoading && !hasTweets" class="text-center mt-4">
-            [TweetFeed] Nenhum tweet encontrado. Siga usuários para ver
-            postagens!
+            Nenhum tweet encontrado. Siga usuários para ver postagens!
         </p>
 
         <p v-if="errorMessage" class="text-center text-error mt-4">
-            [TweetFeed] Erro: {{ errorMessage }}
+            Erro: {{ errorMessage }}
         </p>
     </v-container>
 </template>
