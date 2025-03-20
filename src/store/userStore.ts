@@ -98,7 +98,7 @@ export const useUserStore = defineStore('user', () => {
 
         try {
             const response = await api.get('/user/detail/')
-            authStore.user = response.data
+            authStore.updateUserData(response.data) // Atualiza o usuário corretamente
             console.log(
                 '[UserStore] Detalhes do usuário carregados:',
                 response.data

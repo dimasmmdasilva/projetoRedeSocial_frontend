@@ -38,7 +38,6 @@
                 }
             }
 
-            // NOVO: Carregar os tweets após a autenticação
             console.log('[Dashboard] Carregando tweets do usuário...')
             try {
                 await tweetStore.fetchFollowingTweets()

@@ -51,6 +51,12 @@ export const useFollowStore = defineStore('follow', () => {
                 )
             }
 
+            // Atualizar os dados do usuário autenticado no localStorage e no backend
+            await authStore.fetchUserData()
+            console.log(
+                `[FollowStore] Dados do usuário atualizados após seguir/desseguir.`
+            )
+
             return !currentlyFollowing
         } catch (error: any) {
             console.error(
@@ -62,6 +68,7 @@ export const useFollowStore = defineStore('follow', () => {
                 error.response?.data?.message ||
                 error.response?.data?.detail ||
                 'Erro ao seguir/desseguir usuário.'
+
             return currentlyFollowing
         } finally {
             isLoading.value = false

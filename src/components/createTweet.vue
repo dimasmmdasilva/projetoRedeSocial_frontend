@@ -46,7 +46,7 @@
 </script>
 
 <template>
-    <v-card max-width="800px" elevation="3" class="pa-4 w-100">
+    <v-card max-width="600px" elevation="3" class="pa-4 w-100">
         <v-card-title class="text-center text-h6 font-weight-bold">
             Novo Tweet
         </v-card-title>
@@ -57,7 +57,7 @@
                 label="Escreva suas ideias..."
                 variant="outlined"
                 rows="3"
-                counter="280"
+                counter="200"
                 auto-grow
             />
 

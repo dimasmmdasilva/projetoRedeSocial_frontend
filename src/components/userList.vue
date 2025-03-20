@@ -74,7 +74,7 @@
 
 <template>
     <v-card
-        class="fill-height pa-4 d-flex flex-column align-center w-100"
+        class="fill-height mb-4 pa-4 d-flex flex-column align-center w-100"
         elevation="3"
         color="blue-lighten-4"
     >
@@ -84,19 +84,36 @@
             {{ errorMessage }}
         </v-alert>
 
-        <v-list v-if="!isLoading && users.length" class="w-100">
-            <v-list-item v-for="user in users" :key="user.id">
-                <v-avatar size="50" class="mr-3">
+        <v-list
+            v-if="!isLoading && users.length"
+            class="w-80"
+            color="blue-lighten-4"
+            elevation="0"
+            style="background: none !important"
+        >
+            <v-list-item
+                v-for="user in users"
+                :key="user.id"
+                class="d-flex flex-column align-center text-center py-2"
+                style="background: none !important"
+            >
+                <v-avatar size="50" class="mb-1">
                     <img
                         :src="
                             user.profile_image ||
-                            'https://via.placeholder.com/40'
+                            'https://via.placeholder.com/50'
                         "
                         alt="Profile"
+                        style="
+                            object-fit: cover;
+                            width: 100%;
+                            height: 100%;
+                            border-radius: 50%;
+                        "
                     />
                 </v-avatar>
 
-                <v-list-item-title class="font-weight-bold">
+                <v-list-item-title class="font-weight-bold mb-1">
                     {{ user.username }}
                 </v-list-item-title>
 
@@ -106,7 +123,11 @@
                             ? 'secondary'
                             : 'primary'
                     "
-                    size="small"
+                    size="x-small"
+                    density="compact"
+                    min-width="68"
+                    min-height="18"
+                    class="text-caption"
                     :loading="followStore.isLoading"
                     @click="handleFollow(user.id)"
                 >
@@ -117,12 +138,16 @@
             </v-list-item>
         </v-list>
 
-        <v-dialog v-model="alertMessage" persistent max-width="400">
+        <v-dialog v-model="alertMessage" persistent max-width="250">
             <v-card>
                 <v-card-text>{{ alertMessage }}</v-card-text>
                 <v-card-actions class="d-flex justify-space-between">
-                    <v-btn color="red" @click="handleUnfollow">Sim</v-btn>
-                    <v-btn color="grey" @click="closeDialog">Cancelar</v-btn>
+                    <v-btn color="red" size="small" @click="handleUnfollow"
+                        >Sim</v-btn
+                    >
+                    <v-btn color="grey" size="small" @click="closeDialog"
+                        >Cancelar</v-btn
+                    >
                 </v-card-actions>
             </v-card>
         </v-dialog>

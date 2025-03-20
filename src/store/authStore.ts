@@ -79,16 +79,18 @@ export const useAuthStore = defineStore('auth', () => {
         console.log('[AuthStore] Buscando dados do usuário na API...')
         try {
             const response = await api.get('/user/detail/')
-            user.value = response.data
-
-            user.value.following = response.data.following || []
-            user.value.followers = response.data.followers || []
-
-            localStorage.setItem('user', JSON.stringify(user.value))
+            updateUserData(response.data)
             console.log('[AuthStore] Dados do usuário atualizados:', user.value)
         } catch (error) {
             console.error('[AuthStore] Erro ao buscar dados do usuário:', error)
         }
+    }
+
+    const updateUserData = (data: User) => {
+        user.value = { ...data }
+        user.value.following = data.following || []
+        user.value.followers = data.followers || []
+        localStorage.setItem('user', JSON.stringify(user.value))
     }
 
     const login = async (
@@ -108,14 +110,10 @@ export const useAuthStore = defineStore('auth', () => {
             if (response.data.access) {
                 token.value = response.data.access ?? ''
                 refreshTokenValue.value = response.data.refresh ?? ''
-                user.value = response.data.user
-
-                user.value.following = response.data.user.following || []
-                user.value.followers = response.data.user.followers || []
+                updateUserData(response.data.user)
 
                 localStorage.setItem('token', token.value)
                 localStorage.setItem('refresh_token', refreshTokenValue.value)
-                localStorage.setItem('user', JSON.stringify(user.value))
 
                 setAuthHeader()
                 console.log('[AuthStore] Login bem-sucedido!')
@@ -178,6 +176,7 @@ export const useAuthStore = defineStore('auth', () => {
         errorMessage,
         login,
         logout,
-        fetchUserData
+        fetchUserData,
+        updateUserData
     }
 })

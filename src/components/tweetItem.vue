@@ -15,7 +15,6 @@
     const tweetStore = useTweetStore()
     const authStore = useAuthStore()
 
-    // Estado local para curtidas
     const isLiked = ref(props.tweet.is_liked)
     const likeCount = ref(props.tweet.likes_count)
     const isProcessing = ref(false)
@@ -77,7 +76,7 @@
 </script>
 
 <template>
-    <v-card class="mb-4 pa-4 w-100" elevation="2" max-width="600px">
+    <v-card class="mb-4 pa-4 w-100" elevation="3" max-width="480px">
         <v-card-title class="d-flex justify-space-between align-center">
             <div>
                 <span class="font-weight-bold">{{
@@ -94,11 +93,11 @@
                 </span>
             </div>
 
-            <!-- Botão de exclusão aparece apenas para o autor do tweet -->
             <v-btn
                 v-if="isAuthor"
                 variant="text"
                 color="red"
+                size="x-small"
                 icon="mdi-delete"
                 @click="deleteTweet"
             />

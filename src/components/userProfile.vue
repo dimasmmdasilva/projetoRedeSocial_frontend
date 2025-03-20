@@ -102,7 +102,7 @@
                 v-model="newBio"
                 label="Biografia"
                 variant="solo"
-                counter="300"
+                counter="100"
                 class="mt-2"
                 auto-grow
                 no-resize
@@ -112,10 +112,10 @@
                 v-if="!isEditingBio"
                 variant="outlined"
                 color="primary"
-                class="mt-2"
+                class="mt-5"
                 @click="editBio"
                 :disabled="isSaving"
-                size="small"
+                size="x-small"
                 block
             >
                 Editar Biografia
@@ -126,31 +126,27 @@
                     color="blue-lighten-3"
                     @click="confirmEditBio"
                     :loading="isSaving"
-                    size="small"
+                    size="x-small"
                 >
                     Confirmar
                 </v-btn>
                 <v-btn
                     color="red-lighten-3"
                     @click="cancelEditBio"
-                    size="small"
+                    size="x-small"
                 >
                     Cancelar
                 </v-btn>
             </div>
         </v-card-text>
 
-        <v-spacer></v-spacer>
-
-        <v-card-actions>
-            <v-btn
-                color="red-darken-2"
-                class="white--text"
-                @click="handleLogout"
-                size="small"
-            >
-                Sair
-            </v-btn>
-        </v-card-actions>
+        <v-btn
+            color="red"
+            variant="outlined"
+            size="small"
+            @click="handleLogout"
+        >
+            Sair
+        </v-btn>
     </v-card>
 </template>
