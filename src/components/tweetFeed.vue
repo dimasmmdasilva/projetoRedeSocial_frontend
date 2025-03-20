@@ -39,7 +39,7 @@
             {{ isLoading ? 'Atualizando...' : 'Atualizar Feed' }}
         </v-btn>
 
-        <v-list max-width="600px" class="w-100">
+        <v-list max-width="500px" class="w-100">
             <template v-if="hasTweets">
                 <TweetItem
                     v-for="tweet in tweets"

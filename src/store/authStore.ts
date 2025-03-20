@@ -6,7 +6,9 @@ interface User {
     id: number
     username: string
     followers: { id: number }[]
+    following: { id: number }[]
     followers_count: number
+    following_count: number
     profile_image?: string
     bio?: string
 }
@@ -14,7 +16,16 @@ interface User {
 console.log('[AuthStore] Inicializando Auth Store...')
 
 export const useAuthStore = defineStore('auth', () => {
-    const user = ref<User | null>(null)
+    const user = ref<User>({
+        id: 0,
+        username: '',
+        followers: [],
+        following: [],
+        followers_count: 0,
+        following_count: 0,
+        profile_image: '',
+        bio: ''
+    })
     const token = ref<string>('')
     const refreshTokenValue = ref<string>('')
     const isLoading = ref(false)
@@ -32,6 +43,8 @@ export const useAuthStore = defineStore('auth', () => {
 
             if (storedUser) {
                 user.value = JSON.parse(storedUser)
+                user.value.following = user.value.following || []
+                user.value.followers = user.value.followers || []
                 console.log('[AuthStore] Usuário carregado:', user.value)
             }
 
@@ -67,6 +80,10 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await api.get('/user/detail/')
             user.value = response.data
+
+            user.value.following = response.data.following || []
+            user.value.followers = response.data.followers || []
+
             localStorage.setItem('user', JSON.stringify(user.value))
             console.log('[AuthStore] Dados do usuário atualizados:', user.value)
         } catch (error) {
@@ -92,6 +109,9 @@ export const useAuthStore = defineStore('auth', () => {
                 token.value = response.data.access ?? ''
                 refreshTokenValue.value = response.data.refresh ?? ''
                 user.value = response.data.user
+
+                user.value.following = response.data.user.following || []
+                user.value.followers = response.data.user.followers || []
 
                 localStorage.setItem('token', token.value)
                 localStorage.setItem('refresh_token', refreshTokenValue.value)
@@ -125,7 +145,16 @@ export const useAuthStore = defineStore('auth', () => {
 
         token.value = ''
         refreshTokenValue.value = ''
-        user.value = null
+        user.value = {
+            id: 0,
+            username: '',
+            followers: [],
+            following: [],
+            followers_count: 0,
+            following_count: 0,
+            profile_image: '',
+            bio: ''
+        }
 
         localStorage.removeItem('token')
         localStorage.removeItem('refresh_token')

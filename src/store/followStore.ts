@@ -28,27 +28,26 @@ export const useFollowStore = defineStore('follow', () => {
             isLoading.value = true
             errorMessage.value = ''
 
-            console.log(
-                `[FollowStore] Enviando requisição para ${currentlyFollowing ? 'desseguir' : 'seguir'} usuário ID: ${userId}`
-            )
-            await api.post(`/api/follow/${userId}/`)
+            const response = await api.post(`/users/${userId}/follow/`)
+            console.log(`[FollowStore] Requisição bem-sucedida:`, response.data)
 
             if (currentlyFollowing) {
-                authStore.user.followers = authStore.user.followers.filter(
+                authStore.user.following = authStore.user.following.filter(
                     u => u.id !== userId
                 )
-                authStore.user.followers_count = Math.max(
+                authStore.user.following_count = Math.max(
                     0,
-                    authStore.user.followers_count - 1
+                    (authStore.user.following_count || 0) - 1
                 )
                 console.log(
-                    `[FollowStore] Usuário ID: ${userId} removido da lista de seguidores.`
+                    `[FollowStore] Usuário ID ${userId} removido da lista de seguidos.`
                 )
             } else {
-                authStore.user.followers.push({ id: userId })
-                authStore.user.followers_count += 1
+                authStore.user.following.push({ id: userId })
+                authStore.user.following_count =
+                    (authStore.user.following_count || 0) + 1
                 console.log(
-                    `[FollowStore] Usuário ID: ${userId} adicionado à lista de seguidores.`
+                    `[FollowStore] Usuário ID ${userId} adicionado à lista de seguidos.`
                 )
             }
 
@@ -63,23 +62,18 @@ export const useFollowStore = defineStore('follow', () => {
                 error.response?.data?.message ||
                 error.response?.data?.detail ||
                 'Erro ao seguir/desseguir usuário.'
-            return currentlyFollowing // Retorna o estado anterior caso ocorra erro
+            return currentlyFollowing
         } finally {
             isLoading.value = false
             console.log(
-                `[FollowStore] Finalizado processo de seguir/desseguir usuário ID: ${userId}`
+                `[FollowStore] Finalizado processo de seguir/desseguir usuário ID ${userId}`
             )
         }
     }
 
     const isFollowing = (userId: number): boolean => {
-        if (!authStore.user) return false
-        const following =
-            authStore.user.followers?.some(u => u.id === userId) || false
-        console.log(
-            `[FollowStore] Verificando se usuário ID: ${userId} está sendo seguido: ${following}`
-        )
-        return following
+        if (!authStore.user || !authStore.user.following) return false
+        return authStore.user.following.some(u => u.id === userId)
     }
 
     return { isLoading, errorMessage, toggleFollow, isFollowing }

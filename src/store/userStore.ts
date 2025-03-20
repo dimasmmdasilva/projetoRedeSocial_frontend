@@ -1,10 +1,15 @@
 import { defineStore } from 'pinia'
 import { ref } from 'vue'
 import api from '../config/axiosConfig.js'
+import { useAuthStore } from './authStore.js'
 
 console.log('[UserStore] Inicializando User Store...')
 
 export const useUserStore = defineStore('user', () => {
+    const authStore = useAuthStore()
+    const users = ref<
+        { id: number; username: string; profile_image?: string; bio?: string }[]
+    >([])
     const isLoading = ref(false)
     const errorMessage = ref('')
     const successMessage = ref('')
@@ -40,37 +45,87 @@ export const useUserStore = defineStore('user', () => {
             )
             return { success: true, message: 'Usuário cadastrado com sucesso!' }
         } catch (error: any) {
-            if (error.response) {
-                console.error(
-                    '[UserStore] Erro no registro:',
-                    error.response.status,
-                    error.response.data
-                )
-
-                // Se houver erros específicos no backend, exibir a primeira mensagem de erro encontrada
-                const errorDetail =
-                    error.response.data?.message ||
-                    error.response.data?.detail ||
-                    Object.values(error.response.data || {})
-                        .flat()
-                        .join(', ') ||
-                    'Erro ao cadastrar usuário.'
-
-                errorMessage.value = errorDetail
-                return { success: false, message: errorDetail }
-            } else {
-                console.error('[UserStore] Erro inesperado no registro:', error)
-                errorMessage.value = 'Erro desconhecido ao tentar registrar.'
-                return {
-                    success: false,
-                    message: 'Erro desconhecido ao tentar registrar.'
-                }
-            }
+            console.error(
+                '[UserStore] Erro no registro:',
+                error.response?.status,
+                error.response?.data
+            )
+            errorMessage.value =
+                error.response?.data?.message ||
+                error.response?.data?.detail ||
+                Object.values(error.response?.data || {})
+                    .flat()
+                    .join(', ') ||
+                'Erro ao cadastrar usuário.'
+            return { success: false, message: errorMessage.value }
         } finally {
             isLoading.value = false
             console.log('[UserStore] Cadastro finalizado.')
         }
     }
 
-    return { isLoading, errorMessage, successMessage, registerUser }
+    const fetchUsers = async (): Promise<boolean> => {
+        console.log('[UserStore] Buscando lista de usuários...')
+        isLoading.value = true
+        errorMessage.value = ''
+
+        try {
+            const response = await api.get('/users/list/')
+            users.value = response.data
+            console.log(
+                `[UserStore] Lista de usuários carregada: ${users.value.length} usuários.`
+            )
+            return true
+        } catch (error: any) {
+            console.error(
+                '[UserStore] Erro ao buscar usuários:',
+                error.response?.data || error
+            )
+            errorMessage.value =
+                error.response?.data?.message ||
+                error.response?.data?.detail ||
+                'Erro ao carregar lista de usuários.'
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    const fetchUserDetails = async (): Promise<boolean> => {
+        console.log('[UserStore] Buscando detalhes do usuário autenticado...')
+        isLoading.value = true
+        errorMessage.value = ''
+
+        try {
+            const response = await api.get('/user/detail/')
+            authStore.user = response.data
+            console.log(
+                '[UserStore] Detalhes do usuário carregados:',
+                response.data
+            )
+            return true
+        } catch (error: any) {
+            console.error(
+                '[UserStore] Erro ao buscar detalhes do usuário:',
+                error.response?.data || error
+            )
+            errorMessage.value =
+                error.response?.data?.message ||
+                error.response?.data?.detail ||
+                'Erro ao carregar detalhes do usuário.'
+            return false
+        } finally {
+            isLoading.value = false
+        }
+    }
+
+    return {
+        users,
+        isLoading,
+        errorMessage,
+        successMessage,
+        registerUser,
+        fetchUsers,
+        fetchUserDetails
+    }
 })
