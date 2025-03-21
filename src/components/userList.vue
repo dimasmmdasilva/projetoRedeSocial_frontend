@@ -97,7 +97,7 @@
                 class="d-flex flex-column align-center text-center py-2"
                 style="background: none !important"
             >
-                <v-avatar size="50" class="mb-1">
+                <v-avatar size="80" class="mb-1">
                     <img
                         :src="
                             user.profile_image ||

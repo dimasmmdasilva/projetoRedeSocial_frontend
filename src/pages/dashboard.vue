@@ -51,10 +51,7 @@
 </script>
 
 <template>
-    <v-container
-        fluid
-        class="h-screen w-100 overflow-y-auto overflow-x-hidden pa-0 ma-0"
-    >
+    <v-container fluid class="w-100 pa-0 ma-0">
         <v-row class="fill-height d-flex justify-center">
             <v-col cols="12" md="3" lg="3" class="pa-3 d-flex flex-column">
                 <v-sheet color="white" class="flex-grow-1 d-flex w-100 mb-5">
@@ -74,7 +71,7 @@
             </v-col>
 
             <v-col cols="12" md="7" lg="7" class="pa-4 d-flex flex-column">
-                <v-sheet color="white" elevation="3" class="w-100 mb-4">
+                <v-sheet color="white" elevation="4" class="w-100 mb-3">
                     <template v-if="!isLoading">
                         <TweetFeed />
                     </template>
@@ -87,7 +84,7 @@
                 </v-sheet>
             </v-col>
 
-            <v-col cols="12" md="2" lg="2" class="pa-3 d-flex flex-column">
+            <v-col cols="12" md="2" lg="2" class="pa-3 mb-1 d-flex flex-column">
                 <v-sheet color="white" class="w-100">
                     <template v-if="!isLoading">
                         <UserList />

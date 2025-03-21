@@ -76,7 +76,7 @@
 </script>
 
 <template>
-    <v-card class="mb-4 pa-4 w-100" elevation="3" max-width="480px">
+    <v-card class="mb-4 pa-4 w-100" elevation="3" max-width="580px">
         <v-card-title class="d-flex justify-space-between align-center">
             <div>
                 <span class="font-weight-bold">{{

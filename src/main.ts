@@ -6,13 +6,11 @@ import vuetify from './plugins/vuetify'
 
 const app = createApp(App)
 
-// Configuração global de plugins
 console.log('[Main] Registrando plugins...')
 app.use(createPinia())
 app.use(router)
 app.use(vuetify)
 
-// Função global para tratar erros de autenticação
 const onUnauthorized = () => {
     console.warn(
         '[Main] Token inválido ou expirado. Redirecionando para login...'
@@ -20,10 +18,8 @@ const onUnauthorized = () => {
     router.push('/login')
 }
 
-// Listener global para interceptar eventos de autenticação
 window.addEventListener('unauthorized', onUnauthorized)
 
-// Inicializa o Vue Router antes de montar a aplicação
 router
     .isReady()
     .then(() => {

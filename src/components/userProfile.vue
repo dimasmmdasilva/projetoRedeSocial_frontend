@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed, onMounted } from 'vue'
+    import { ref, computed, onMounted, watch } from 'vue'
     import { useAuthStore } from '../store/authStore'
     import { useProfileStore } from '../store/profileStore'
 
@@ -7,11 +7,11 @@
     const profileStore = useProfileStore()
 
     const user = computed(() => authStore.user || null)
-
     const fileInput = ref(null)
     const newBio = ref('')
     const isEditingBio = ref(false)
     const isSaving = computed(() => profileStore.isLoading)
+    const showScrollButton = ref(false)
 
     const triggerFileUpload = () => {
         if (fileInput.value) {
@@ -34,9 +34,7 @@
     }
 
     const confirmEditBio = async () => {
-        if (!newBio.value.trim()) {
-            return
-        }
+        if (!newBio.value.trim()) return
         await profileStore.updateBio(newBio.value)
         isEditingBio.value = false
     }
@@ -49,16 +47,35 @@
         authStore.logout()
     }
 
+    const handleScroll = () => {
+        showScrollButton.value = window.scrollY > 200
+    }
+
+    const scrollToTop = () => {
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+    }
+
     onMounted(() => {
         console.log('[UserProfile] Perfil carregado:', user.value)
+        window.addEventListener('scroll', handleScroll)
+    })
+
+    watch(user, newVal => {
+        console.log('[UserProfile] Usuário atualizado:', newVal)
     })
 </script>
 
 <template>
     <v-card
-        class="d-flex flex-column align-center pa-6 flex-grow-1"
+        class="d-flex flex-column align-center pa-6 flex-grow-1 position-relative"
         elevation="3"
         color="blue-lighten-4"
+        style="
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            position: relative;
+        "
     >
         <v-avatar
             size="170"
@@ -140,13 +157,24 @@
             </div>
         </v-card-text>
 
-        <v-btn
-            color="red"
-            variant="outlined"
-            size="small"
-            @click="handleLogout"
+        <v-card-actions
+            class="w-100 d-flex flex-column align-center"
+            style="
+                position: absolute;
+                bottom: 10px;
+                left: 50%;
+                transform: translateX(-50%);
+            "
         >
-            Sair
-        </v-btn>
+            <v-btn
+                color="red"
+                variant="outlined"
+                size="x-small"
+                class="w-75"
+                @click="handleLogout"
+            >
+                Sair
+            </v-btn>
+        </v-card-actions>
     </v-card>
 </template>
