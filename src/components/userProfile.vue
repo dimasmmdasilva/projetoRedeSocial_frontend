@@ -1,5 +1,5 @@
 <script setup>
-    import { ref, computed, onMounted, watch } from 'vue'
+    import { ref, computed, watch } from 'vue'
     import { useAuthStore } from '../store/authStore'
     import { useProfileStore } from '../store/profileStore'
 
@@ -11,26 +11,26 @@
     const newBio = ref('')
     const isEditingBio = ref(false)
     const isSaving = computed(() => profileStore.isLoading)
-    const showScrollButton = ref(false)
+    const menu = ref(false)
 
     const triggerFileUpload = () => {
-        if (fileInput.value) {
-            fileInput.value.click()
-        }
+        if (fileInput.value) fileInput.value.click()
     }
 
     const uploadImage = event => {
-        const target = event.target
-        const file = target.files ? target.files[0] : null
-
-        if (file) {
-            profileStore.updateProfileImage(file)
-        }
+        const file = event.target.files?.[0] || null
+        if (file) profileStore.updateProfileImage(file)
     }
 
     const editBio = () => {
         newBio.value = user.value?.bio || ''
         isEditingBio.value = true
+        menu.value = false
+
+        // subir suavemente ao topo ao clicar em editar
+        window.scrollTo({ top: 0, behavior: 'smooth' })
+        document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
+        document.body.scrollTo({ top: 0, behavior: 'smooth' })
     }
 
     const confirmEditBio = async () => {
@@ -45,20 +45,15 @@
 
     const handleLogout = () => {
         authStore.logout()
-    }
-
-    const handleScroll = () => {
-        showScrollButton.value = window.scrollY > 200
+        menu.value = false
     }
 
     const scrollToTop = () => {
         window.scrollTo({ top: 0, behavior: 'smooth' })
+        document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
+        document.body.scrollTo({ top: 0, behavior: 'smooth' })
+        menu.value = false
     }
-
-    onMounted(() => {
-        console.log('[UserProfile] Perfil carregado:', user.value)
-        window.addEventListener('scroll', handleScroll)
-    })
 
     watch(user, newVal => {
         console.log('[UserProfile] Usuário atualizado:', newVal)
@@ -67,18 +62,13 @@
 
 <template>
     <v-card
-        class="d-flex flex-column align-center pa-6 flex-grow-1 position-relative"
+        class="d-flex flex-column align-center pa-6 flex-grow-1"
         elevation="3"
         color="blue-lighten-4"
-        style="
-            min-height: 100vh;
-            display: flex;
-            flex-direction: column;
-            position: relative;
-        "
+        style="min-height: 100vh"
     >
         <v-avatar
-            size="170"
+            size="200"
             class="mb-4 mt-6 cursor-pointer"
             @click="triggerFileUpload"
         >
@@ -111,7 +101,7 @@
 
         <v-card-text class="text-center w-100">
             <p v-if="!isEditingBio" class="text-caption font-italic">
-                "{{ user?.bio || 'Escreva sobre você' }} "
+                "{{ user?.bio || 'Escreva sobre você' }}"
             </p>
 
             <v-textarea
@@ -124,19 +114,6 @@
                 auto-grow
                 no-resize
             />
-
-            <v-btn
-                v-if="!isEditingBio"
-                variant="outlined"
-                color="primary"
-                class="mt-5"
-                @click="editBio"
-                :disabled="isSaving"
-                size="x-small"
-                block
-            >
-                Editar Biografia
-            </v-btn>
 
             <div v-if="isEditingBio" class="d-flex justify-space-between mt-2">
                 <v-btn
@@ -156,25 +133,65 @@
                 </v-btn>
             </div>
         </v-card-text>
+    </v-card>
 
-        <v-card-actions
-            class="w-100 d-flex flex-column align-center"
-            style="
-                position: absolute;
-                bottom: 10px;
-                left: 50%;
-                transform: translateX(-50%);
-            "
-        >
+    <!-- MENU FLUTUANTE EXTERNO AO CARD -->
+    <v-menu
+        v-model="menu"
+        transition="slide-y-transition"
+        offset-y
+        location="top start"
+        :close-on-content-click="false"
+    >
+        <template #activator="{ props }">
             <v-btn
-                color="red"
+                icon
+                color="primary"
+                elevation="10"
+                size="small"
+                v-bind="props"
+                style="
+                    position: fixed;
+                    bottom: 20px;
+                    left: 20px;
+                    z-index: 99999;
+                    pointer-events: auto;
+                "
+            >
+                <v-icon>mdi-menu</v-icon>
+            </v-btn>
+        </template>
+
+        <v-card class="pa-2 d-flex flex-column" style="min-width: 140px">
+            <v-btn
                 variant="outlined"
                 size="x-small"
-                class="w-75"
+                class="mb-2"
+                @click="editBio"
+            >
+                <v-icon start size="small">mdi-pencil</v-icon>
+                Editar
+            </v-btn>
+
+            <v-btn
+                variant="outlined"
+                size="x-small"
+                class="mb-2"
+                @click="scrollToTop"
+            >
+                <v-icon start size="small">mdi-arrow-up</v-icon>
+                Topo
+            </v-btn>
+
+            <v-btn
+                variant="outlined"
+                color="red"
+                size="x-small"
                 @click="handleLogout"
             >
+                <v-icon start size="small">mdi-logout</v-icon>
                 Sair
             </v-btn>
-        </v-card-actions>
-    </v-card>
+        </v-card>
+    </v-menu>
 </template>
