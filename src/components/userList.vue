@@ -74,7 +74,7 @@
 
 <template>
     <v-card
-        class="fill-height mb-4 pa-4 d-flex flex-column align-center w-100"
+        class="fill-height mb-4 d-flex flex-column align-center w-100"
         elevation="3"
         color="blue-lighten-4"
     >

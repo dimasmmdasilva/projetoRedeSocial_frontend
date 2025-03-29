@@ -29,16 +29,16 @@
 
             if (success) {
                 newTweetContent.value = ''
-                successMessage.value = 'Tweet publicado com sucesso!'
-                console.log('[CreateTweet] Tweet enviado com sucesso!')
+                successMessage.value = 'publicado com sucesso!'
+                console.log('[CreateTweet] Mensagem enviada com sucesso!')
             } else {
                 errorMessage.value =
-                    'Falha ao publicar o tweet. Tente novamente.'
+                    'Falha ao publicar a mensagem. Tente novamente.'
             }
         } catch (error) {
-            console.error('[CreateTweet] Erro ao criar tweet:', error)
+            console.error('[CreateTweet] Erro ao criar a mensagem:', error)
             errorMessage.value =
-                error.response?.data?.message || 'Erro ao enviar tweet.'
+                error.response?.data?.message || 'Erro ao enviar a mensagem.'
         } finally {
             isProcessing.value = false
         }
@@ -48,13 +48,13 @@
 <template>
     <v-card max-width="600px" elevation="3" class="pa-2 w-100">
         <v-card-title class="text-center text-h6 font-weight-bold">
-            Novo Tweet
+            mensagem
         </v-card-title>
 
         <v-card-text>
             <v-textarea
                 v-model="newTweetContent"
-                label="Escreva suas ideias..."
+                label="escreva aqui..."
                 variant="outlined"
                 rows="3"
                 counter="200"
@@ -75,7 +75,7 @@
                 class="mt-2 w-25"
                 @click="handleCreateTweet"
             >
-                {{ isProcessing ? 'Enviando...' : 'Tweetar' }}
+                {{ isProcessing ? 'enviando...' : 'postar' }}
             </v-btn>
         </v-card-text>
     </v-card>

@@ -62,7 +62,7 @@
 
 <template>
     <v-card
-        class="d-flex flex-column align-center pa-6 flex-grow-1"
+        class="d-flex flex-column align-center flex-grow-1"
         elevation="3"
         color="blue-lighten-4"
         style="min-height: 100vh"
@@ -135,7 +135,6 @@
         </v-card-text>
     </v-card>
 
-    <!-- MENU FLUTUANTE EXTERNO AO CARD -->
     <v-menu
         v-model="menu"
         transition="slide-y-transition"

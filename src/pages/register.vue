@@ -15,12 +15,10 @@
     const isLoading = ref(false)
 
     const handleSignUp = async () => {
-        console.log('[Cadastro] Iniciando processo de registro...')
         errorMessage.value = ''
         successMessage.value = ''
         isLoading.value = true
 
-        // Validações no frontend antes de enviar ao backend
         if (
             !username.value ||
             !email.value ||
@@ -48,10 +46,6 @@
 
             if (success) {
                 successMessage.value = 'Cadastrado com sucesso!'
-                console.log(
-                    '[Cadastro] Usuário cadastrado com sucesso! Redirecionando para login...'
-                )
-
                 setTimeout(() => {
                     router.push('/login')
                 }, 1500)
@@ -59,7 +53,6 @@
                 errorMessage.value = 'Erro ao cadastrar.'
             }
         } catch (error) {
-            console.error('[Cadastro] Erro ao cadastrar:', error)
             errorMessage.value =
                 error.response?.data?.error || 'Erro ao cadastrar usuário.'
         } finally {
@@ -69,77 +62,172 @@
 </script>
 
 <template>
-    <v-container class="fill-height d-flex justify-center align-center">
-        <v-card class="pa-6 pb-4" width="420" elevation="8" rounded="lg">
-            <v-card-title class="text-center text-h5 font-weight-bold">
-                Cadastro
-            </v-card-title>
+    <div class="register-wrapper">
+        <div class="bg-layer bg1"></div>
+        <div class="bg-layer bg2"></div>
+        <div class="bg-layer bg3"></div>
 
-            <v-form
-                @submit.prevent="handleSignUp"
-                class="d-flex flex-column align-center"
-            >
-                <v-text-field
-                    v-model="username"
-                    label="Nome do Usuário"
-                    variant="outlined"
-                    density="comfortable"
-                    class="mt-4 w-75"
-                    :rules="[v => !!v || 'Este campo é obrigatório']"
-                />
-                <v-text-field
-                    v-model="email"
-                    label="E-mail"
-                    type="email"
-                    variant="outlined"
-                    density="comfortable"
-                    class="mt-2 w-75"
-                    :rules="[v => !!v || 'Este campo é obrigatório']"
-                />
-                <v-text-field
-                    v-model="password"
-                    label="Senha"
-                    type="password"
-                    variant="outlined"
-                    density="comfortable"
-                    class="mt-2 w-75"
-                    :rules="[v => !!v || 'Este campo é obrigatório']"
-                />
-                <v-text-field
-                    v-model="confirmPassword"
-                    label="Confirmar Senha"
-                    type="password"
-                    variant="outlined"
-                    density="comfortable"
-                    class="mt-2 w-75"
-                    :rules="[v => !!v || 'Este campo é obrigatório']"
-                />
+        <div class="register-content d-flex justify-center align-center">
+            <v-card class="pa-6 pb-4" width="420" elevation="8" rounded="lg">
+                <v-card-title class="text-center text-h5 font-weight-bold">
+                    Cadastro
+                </v-card-title>
 
-                <v-alert v-if="errorMessage" type="error" class="mb-2 w-75">
-                    {{ errorMessage }}
-                </v-alert>
-
-                <v-alert v-if="successMessage" type="success" class="mb-2 w-75">
-                    {{ successMessage }}
-                </v-alert>
-
-                <v-btn
-                    color="primary"
-                    type="submit"
-                    :loading="isLoading"
-                    size="small"
-                    class="mt-3 w-75"
+                <v-form
+                    @submit.prevent="handleSignUp"
+                    class="d-flex flex-column align-center"
                 >
-                    {{ isLoading ? 'Cadastrando...' : 'Cadastrar' }}
-                </v-btn>
-            </v-form>
+                    <v-text-field
+                        v-model="username"
+                        label="Nome do Usuário"
+                        variant="outlined"
+                        density="comfortable"
+                        class="mt-4 w-75"
+                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                    />
+                    <v-text-field
+                        v-model="email"
+                        label="E-mail"
+                        type="email"
+                        variant="outlined"
+                        density="comfortable"
+                        class="mt-2 w-75"
+                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                    />
+                    <v-text-field
+                        v-model="password"
+                        label="Senha"
+                        type="password"
+                        variant="outlined"
+                        density="comfortable"
+                        class="mt-2 w-75"
+                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                    />
+                    <v-text-field
+                        v-model="confirmPassword"
+                        label="Confirmar Senha"
+                        type="password"
+                        variant="outlined"
+                        density="comfortable"
+                        class="mt-2 w-75"
+                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                    />
 
-            <v-card-actions class="justify-center">
-                <p class="text-caption">
-                    Já possui uma conta?
-                    <router-link to="/login">Entre aqui</router-link>
-                </p>
-            </v-card-actions>
-        </v-card>
-    </v-container>
+                    <v-alert v-if="errorMessage" type="error" class="mb-2 w-75">
+                        {{ errorMessage }}
+                    </v-alert>
+
+                    <v-alert
+                        v-if="successMessage"
+                        type="success"
+                        class="mb-2 w-75"
+                    >
+                        {{ successMessage }}
+                    </v-alert>
+
+                    <v-btn
+                        color="primary"
+                        type="submit"
+                        :loading="isLoading"
+                        size="small"
+                        class="mt-3 w-75"
+                    >
+                        {{ isLoading ? 'Cadastrando...' : 'Cadastrar' }}
+                    </v-btn>
+                </v-form>
+
+                <v-card-actions class="justify-center">
+                    <p class="text-caption">
+                        Já possui uma conta?
+                        <router-link to="/login">Entre aqui</router-link>
+                    </p>
+                </v-card-actions>
+            </v-card>
+        </div>
+    </div>
 </template>
+
+<style scoped>
+    .register-wrapper {
+        position: fixed;
+        inset: 0;
+        overflow: hidden;
+        z-index: 0;
+    }
+
+    .register-content {
+        position: relative;
+        z-index: 2;
+        width: 100vw;
+        height: 100vh;
+    }
+
+    .bg-layer {
+        position: absolute;
+        top: -50%;
+        left: -50%;
+        width: 200%;
+        height: 200%;
+        opacity: 0.5;
+        transform: skewX(-20deg);
+        z-index: 0;
+        animation: slide-diagonal 6s ease-in-out infinite alternate;
+        background-size: 300% 300%;
+        background-repeat: no-repeat;
+    }
+
+    .bg1 {
+        background-image: linear-gradient(
+            -60deg,
+            #add8e6 20%,
+            transparent 20%,
+            transparent 40%,
+            #add8e6 40%,
+            #add8e6 60%,
+            transparent 60%,
+            transparent 80%,
+            #add8e6 80%
+        );
+        animation-duration: 8s;
+    }
+
+    .bg2 {
+        background-image: linear-gradient(
+            -60deg,
+            #005f99 20%,
+            transparent 20%,
+            transparent 40%,
+            #005f99 40%,
+            #005f99 60%,
+            transparent 60%,
+            transparent 80%,
+            #005f99 80%
+        );
+        animation-duration: 10s;
+        animation-direction: alternate-reverse;
+    }
+
+    .bg3 {
+        background-image: linear-gradient(
+            -60deg,
+            #d3d3d3 20%,
+            transparent 20%,
+            transparent 40%,
+            #d3d3d3 40%,
+            #d3d3d3 60%,
+            transparent 60%,
+            transparent 80%,
+            #d3d3d3 80%
+        );
+        animation-duration: 12s;
+    }
+
+    @keyframes slide-diagonal {
+        0% {
+            transform: translateX(-20%) skewX(-20deg);
+        }
+        100% {
+            transform: translateX(20%) skewX(-20deg);
+        }
+    }
+</style>
