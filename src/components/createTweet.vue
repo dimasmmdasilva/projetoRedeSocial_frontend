@@ -7,13 +7,22 @@
     const errorMessage = ref('')
     const successMessage = ref('')
     const isProcessing = ref(false)
+    const MAX_LENGTH = 200
 
     const handleCreateTweet = async () => {
-        console.log('[CreateTweet] Tentando criar um tweet...')
+        const content = newTweetContent.value.trim()
 
-        if (!newTweetContent.value.trim()) {
-            errorMessage.value = 'O tweet não pode estar vazio.'
-            console.warn('[CreateTweet] Tentativa de tweet vazio bloqueada.')
+        if (!content) {
+            errorMessage.value = 'não pode estar vazio'
+            successMessage.value = ''
+            clearMessage(errorMessage)
+            return
+        }
+
+        if (content.length > MAX_LENGTH) {
+            errorMessage.value = `não pode ter mais que ${MAX_LENGTH} caracteres`
+            successMessage.value = ''
+            clearMessage(errorMessage)
             return
         }
 
@@ -22,26 +31,30 @@
         isProcessing.value = true
 
         try {
-            console.log(
-                `[CreateTweet] Enviando tweet: "${newTweetContent.value}"`
-            )
-            const success = await tweetStore.createTweet(newTweetContent.value)
+            const success = await tweetStore.createTweet(content)
 
             if (success) {
                 newTweetContent.value = ''
                 successMessage.value = 'publicado com sucesso!'
-                console.log('[CreateTweet] Mensagem enviada com sucesso!')
+                clearMessage(successMessage)
             } else {
                 errorMessage.value =
                     'Falha ao publicar a mensagem. Tente novamente.'
+                clearMessage(errorMessage)
             }
         } catch (error) {
-            console.error('[CreateTweet] Erro ao criar a mensagem:', error)
             errorMessage.value =
                 error.response?.data?.message || 'Erro ao enviar a mensagem.'
+            clearMessage(errorMessage)
         } finally {
             isProcessing.value = false
         }
+    }
+
+    const clearMessage = messageRef => {
+        setTimeout(() => {
+            messageRef.value = ''
+        }, 3000)
     }
 </script>
 
@@ -61,18 +74,28 @@
                 auto-grow
             />
 
-            <v-alert v-if="errorMessage" type="error" class="mt-2">
+            <v-alert
+                v-if="errorMessage"
+                type="error"
+                class="mt-2"
+                transition="fade-transition"
+            >
                 {{ errorMessage }}
             </v-alert>
 
-            <v-alert v-if="successMessage" type="success" class="mt-2">
+            <v-alert
+                v-if="successMessage"
+                type="success"
+                class="mt-2"
+                transition="fade-transition"
+            >
                 {{ successMessage }}
             </v-alert>
 
             <v-btn
                 color="primary"
-                :disabled="isProcessing || !newTweetContent.trim()"
                 class="mt-2 w-25"
+                :disabled="isProcessing || !newTweetContent.trim()"
                 @click="handleCreateTweet"
             >
                 {{ isProcessing ? 'enviando...' : 'postar' }}

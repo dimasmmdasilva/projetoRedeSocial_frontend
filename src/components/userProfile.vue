@@ -12,6 +12,7 @@
     const isEditingBio = ref(false)
     const isSaving = computed(() => profileStore.isLoading)
     const menu = ref(false)
+    const errorMessage = ref('')
 
     const triggerFileUpload = () => {
         if (fileInput.value) fileInput.value.click()
@@ -26,8 +27,6 @@
         newBio.value = user.value?.bio || ''
         isEditingBio.value = true
         menu.value = false
-
-        // subir suavemente ao topo ao clicar em editar
         window.scrollTo({ top: 0, behavior: 'smooth' })
         document.documentElement.scrollTo({ top: 0, behavior: 'smooth' })
         document.body.scrollTo({ top: 0, behavior: 'smooth' })
@@ -35,6 +34,13 @@
 
     const confirmEditBio = async () => {
         if (!newBio.value.trim()) return
+
+        if (newBio.value.length > 100) {
+            errorMessage.value = 'deve ter no máximo 100 caracteres.'
+            setTimeout(() => (errorMessage.value = ''), 3000)
+            return
+        }
+
         await profileStore.updateBio(newBio.value)
         isEditingBio.value = false
     }
@@ -62,10 +68,9 @@
 
 <template>
     <v-card
-        class="d-flex flex-column align-center flex-grow-1"
+        class="d-flex flex-column align-center fill-height"
         elevation="3"
         color="blue-lighten-4"
-        style="min-height: 100vh"
     >
         <v-avatar
             size="200"
@@ -99,7 +104,7 @@
             {{ user?.followers_count ?? 0 }} seguidores
         </v-card-subtitle>
 
-        <v-card-text class="text-center w-100">
+        <v-card-text class="text-center w-100 pa-10">
             <p v-if="!isEditingBio" class="text-caption font-italic">
                 "{{ user?.bio || 'Escreva sobre você' }}"
             </p>
@@ -114,6 +119,15 @@
                 auto-grow
                 no-resize
             />
+
+            <v-alert
+                v-if="errorMessage"
+                type="error"
+                class="mt-2"
+                transition="fade-transition"
+            >
+                {{ errorMessage }}
+            </v-alert>
 
             <div v-if="isEditingBio" class="d-flex justify-space-between mt-2">
                 <v-btn
@@ -151,8 +165,8 @@
                 v-bind="props"
                 style="
                     position: fixed;
-                    bottom: 20px;
-                    left: 20px;
+                    bottom: 35px;
+                    left: 35px;
                     z-index: 99999;
                     pointer-events: auto;
                 "
@@ -165,7 +179,7 @@
             <v-btn
                 variant="outlined"
                 size="x-small"
-                class="mb-2"
+                class="mb-3"
                 @click="editBio"
             >
                 <v-icon start size="small">mdi-pencil</v-icon>

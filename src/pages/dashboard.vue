@@ -45,16 +45,17 @@
         <div class="bg-layer bg3"></div>
 
         <v-container fluid class="dashboard-content pa-0 ma-0">
-            <v-row class="d-flex justify-center">
+            <v-row class="fill-height d-flex justify-center align-stretch">
+                <!-- userProfile -->
                 <v-col cols="12" md="2" lg="3" class="pa-3 d-flex flex-column">
                     <v-sheet
                         color="white"
-                        class="flex-grow-1 d-flex w-100 mb-5"
+                        class="h-100 w-100 rounded-lg d-flex flex-column"
                     >
                         <template v-if="!isLoading && authStore.user">
                             <UserProfile
                                 :userProfile="authStore.user"
-                                class="flex-grow-1 w-100"
+                                class="fill-height"
                             />
                         </template>
                         <v-progress-circular
@@ -66,8 +67,13 @@
                     </v-sheet>
                 </v-col>
 
-                <v-col cols="12" md="8" lg="7" class="pa-4 d-flex flex-column">
-                    <v-sheet color="white" elevation="4" class="w-100 mb-3">
+                <!-- tweetFeed -->
+                <v-col cols="12" md="8" lg="7" class="pa-3 d-flex flex-column">
+                    <v-sheet
+                        color="white"
+                        elevation="4"
+                        class="h-100 w-100 rounded-lg d-flex flex-column"
+                    >
                         <template v-if="!isLoading">
                             <TweetFeed />
                         </template>
@@ -80,15 +86,14 @@
                     </v-sheet>
                 </v-col>
 
-                <v-col
-                    cols="12"
-                    md="2"
-                    lg="2"
-                    class="pa-3 mb-1 d-flex flex-column"
-                >
-                    <v-sheet color="white" class="w-100">
+                <!-- userList -->
+                <v-col cols="12" md="2" lg="2" class="pa-3 d-flex flex-column">
+                    <v-sheet
+                        color="white"
+                        class="h-100 w-100 rounded-lg d-flex flex-column"
+                    >
                         <template v-if="!isLoading">
-                            <UserList />
+                            <UserList class="fill-height" />
                         </template>
                         <v-progress-circular
                             v-else
@@ -106,7 +111,7 @@
 <style scoped>
     .dashboard-wrapper {
         position: relative;
-        min-height: 100vh;
+        height: auto;
     }
 
     .dashboard-content {
@@ -117,17 +122,17 @@
 
     .bg-layer {
         position: absolute;
-        top: -50%;
-        left: -50%;
-        width: 200%;
-        height: 200%;
+        top: -5%;
+        left: -5%;
+        width: 100%;
+        height: 100%;
         opacity: 0.5;
         transform: skewX(-20deg);
         z-index: 0;
+        pointer-events: none;
         animation: slide-diagonal 6s ease-in-out infinite alternate;
         background-size: 300% 300%;
         background-repeat: no-repeat;
-        pointer-events: none;
     }
 
     .bg1 {

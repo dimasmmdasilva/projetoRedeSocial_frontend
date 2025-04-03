@@ -26,7 +26,7 @@
 </script>
 
 <template>
-    <v-container fluid class="d-flex flex-column align-center mt-4">
+    <v-container fluid class="d-flex flex-column align-center mt-3">
         <TweetForm />
         <v-divider class="my-4" />
 
