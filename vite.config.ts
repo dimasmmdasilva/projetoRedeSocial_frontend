@@ -8,21 +8,20 @@ export default defineConfig(({ mode }) => {
     const isDocker = env.VITE_RUNNING_IN_DOCKER === 'true'
     const isDev = mode === 'development'
 
-    // Definição da URL do backend para cada ambiente
     const backendUrl = isDev
-        ? 'http://localhost:8000' // Ambiente de desenvolvimento local
+        ? 'http://localhost:8000'
         : isDocker
-          ? 'http://backend:8000' // Ambiente interno do Docker
-          : '/api/' // Produção (com proxy configurado no Nginx)
+          ? 'http://backend:8000'
+          : 'https://mysocial-backend.onrender.com/api/'
 
     console.log(`\n🔹 [Vite Config] Ambiente: ${mode}`)
     console.log(`🔹 [Vite Config] Backend URL definida como: ${backendUrl}\n`)
 
     return {
         plugins: [vue()],
-        base: isDev ? '/' : './', // Garante que os assets são carregados corretamente na build
+        base: isDev ? '/' : './',
         server: {
-            host: '0.0.0.0', // Permite acesso externo para testes
+            host: '0.0.0.0',
             port: 5173,
             strictPort: true,
             cors: true,
@@ -35,9 +34,9 @@ export default defineConfig(({ mode }) => {
             }
         },
         build: {
-            outDir: 'dist', // Diretório onde a build será gerada
-            assetsDir: 'assets', // Pasta para os assets dentro de dist/
-            sourcemap: false, // Desativa sourcemaps na produção para otimizar performance
+            outDir: 'dist',
+            assetsDir: 'assets',
+            sourcemap: false,
             minify: isDev ? false : 'terser',
             rollupOptions: {
                 output: {
@@ -52,8 +51,8 @@ export default defineConfig(({ mode }) => {
                 '@': path.resolve(__dirname, 'src')
             }
         },
-        envDir: path.resolve(__dirname, './env'), // Mantém arquivos .env organizados
-        cacheDir: 'vite_cache', // Define uma pasta separada para o cache do Vite
-        publicDir: 'public' // Garante que assets estáticos fiquem organizados
+        envDir: path.resolve(__dirname, './env'),
+        cacheDir: 'vite_cache',
+        publicDir: 'public'
     }
 })
