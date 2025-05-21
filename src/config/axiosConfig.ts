@@ -3,13 +3,12 @@ import { useAuthStore } from '../store/authStore.js'
 
 const API_URL =
     import.meta.env.MODE === 'development'
-        ? 'http://localhost:8000/api/' // Modo de desenvolvimento
-        : '/api/' // Produção ou Docker
+        ? 'http://localhost:8000/api/'
+        : 'https://mysocial-backend.onrender.com/api/'
 
 console.log(`[Axios Config] Ambiente: ${import.meta.env.MODE}`)
 console.log(`[Axios Config] Definindo baseURL como: ${API_URL}`)
 
-// Criando a instância do Axios com configuração base
 const api = axios.create({
     baseURL: API_URL,
     headers: {
@@ -17,7 +16,6 @@ const api = axios.create({
     }
 })
 
-// Interceptador de requisição para adicionar o token JWT
 api.interceptors.request.use(
     config => {
         console.log(`[Axios Request] Iniciando requisição para ${config.url}`)
@@ -49,7 +47,6 @@ api.interceptors.request.use(
     }
 )
 
-// Função para tentar renovar o token
 const refreshToken = async () => {
     const refreshToken = localStorage.getItem('refresh_token')
     if (!refreshToken) {
@@ -75,7 +72,6 @@ const refreshToken = async () => {
     return null
 }
 
-// Interceptador de resposta para tratamento de erros
 api.interceptors.response.use(
     response => {
         console.log(
@@ -110,7 +106,6 @@ api.interceptors.response.use(
                     '[Axios Response] Token inválido ou expirado. Redirecionando para login.'
                 )
 
-                // Se o token não puder ser renovado, força logout
                 const authStore = useAuthStore()
                 authStore.logout()
             } else if (status === 403) {
