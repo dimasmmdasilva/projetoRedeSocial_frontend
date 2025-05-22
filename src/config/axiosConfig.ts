@@ -1,10 +1,7 @@
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore.js'
 
-const API_URL =
-    import.meta.env.MODE === 'development'
-        ? 'http://localhost:8000/api/'
-        : 'https://mysocial-backend-w7sl.onrender.com/api/'
+const API_URL = 'https://mysocial-backend-w7sl.onrender.com/api/'
 
 console.log(`[Axios Config] Ambiente: ${import.meta.env.MODE}`)
 console.log(`[Axios Config] Definindo baseURL como: ${API_URL}`)
