@@ -11,19 +11,19 @@ const vuetify = createVuetify({
     components,
     directives,
     theme: {
-        defaultTheme: 'light'
+        defaultTheme: 'light',
     },
     icons: {
-        defaultSet: 'mdi'
+        defaultSet: 'mdi',
     },
     defaults: {
         VContainer: {
-            fluid: true
+            fluid: true,
         },
         VSheet: {
-            width: '100%'
-        }
-    }
+            width: '100%',
+        },
+    },
 })
 
 export default vuetify

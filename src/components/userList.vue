@@ -24,7 +24,7 @@
         }
     })
 
-    const handleFollow = async userId => {
+    const handleFollow = async (userId) => {
         console.log(`[UserList] Tentando seguir usuário ID ${userId}`)
 
         if (followStore.isFollowing(userId)) {

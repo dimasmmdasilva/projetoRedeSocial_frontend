@@ -9,12 +9,12 @@ console.log(`[Axios Config] Definindo baseURL como: ${API_URL}`)
 const api = axios.create({
     baseURL: API_URL,
     headers: {
-        'Content-Type': 'application/json'
-    }
+        'Content-Type': 'application/json',
+    },
 })
 
 api.interceptors.request.use(
-    config => {
+    (config) => {
         console.log(`[Axios Request] Iniciando requisição para ${config.url}`)
 
         const token = localStorage.getItem('token')
@@ -38,7 +38,7 @@ api.interceptors.request.use(
 
         return config
     },
-    error => {
+    (error) => {
         console.error('[Axios Request] Erro ao configurar requisição:', error)
         return Promise.reject(error)
     }
@@ -54,7 +54,7 @@ const refreshToken = async () => {
     try {
         console.log('[Axios] Tentando renovar o token...')
         const response = await axios.post(`${API_URL}auth/refresh/`, {
-            refresh: refreshToken
+            refresh: refreshToken,
         })
 
         if (response.data.access) {
@@ -70,14 +70,14 @@ const refreshToken = async () => {
 }
 
 api.interceptors.response.use(
-    response => {
+    (response) => {
         console.log(
             `[Axios Response] Resposta recebida de ${response.config.url}`,
             response
         )
         return response
     },
-    async error => {
+    async (error) => {
         if (error.response) {
             const { status, config } = error.response
             console.error(

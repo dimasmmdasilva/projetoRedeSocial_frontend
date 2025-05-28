@@ -1,4 +1,4 @@
-node_modules
-dist
-public
+node_modules/
+dist/
+public/
 package-lock.json

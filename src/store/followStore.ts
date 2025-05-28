@@ -33,7 +33,7 @@ export const useFollowStore = defineStore('follow', () => {
 
             if (currentlyFollowing) {
                 authStore.user.following = authStore.user.following.filter(
-                    u => u.id !== userId
+                    (u) => u.id !== userId
                 )
                 authStore.user.following_count = Math.max(
                     0,
@@ -80,7 +80,7 @@ export const useFollowStore = defineStore('follow', () => {
 
     const isFollowing = (userId: number): boolean => {
         if (!authStore.user || !authStore.user.following) return false
-        return authStore.user.following.some(u => u.id === userId)
+        return authStore.user.following.some((u) => u.id === userId)
     }
 
     return { isLoading, errorMessage, toggleFollow, isFollowing }

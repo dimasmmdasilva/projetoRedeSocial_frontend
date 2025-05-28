@@ -26,6 +26,6 @@ router
         app.mount('#app')
         console.log('[Main] Aplicação Vue montada com sucesso!')
     })
-    .catch(error => {
+    .catch((error) => {
         console.error('[Main] Erro ao iniciar a aplicação:', error)
     })

@@ -18,7 +18,7 @@
         if (fileInput.value) fileInput.value.click()
     }
 
-    const uploadImage = event => {
+    const uploadImage = (event) => {
         const file = event.target.files?.[0] || null
         if (file) profileStore.updateProfileImage(file)
     }
@@ -61,7 +61,7 @@
         menu.value = false
     }
 
-    watch(user, newVal => {
+    watch(user, (newVal) => {
         console.log('[UserProfile] Usuário atualizado:', newVal)
     })
 </script>

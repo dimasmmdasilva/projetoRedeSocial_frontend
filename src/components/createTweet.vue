@@ -51,7 +51,7 @@
         }
     }
 
-    const clearMessage = messageRef => {
+    const clearMessage = (messageRef) => {
         setTimeout(() => {
             messageRef.value = ''
         }, 3000)

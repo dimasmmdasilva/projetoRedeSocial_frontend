@@ -14,19 +14,18 @@ const routes = [
         path: '/dashboard',
         name: 'Dashboard',
         component: Dashboard,
-        meta: { requiresAuth: true }
-    }
+        meta: { requiresAuth: true },
+    },
 ]
 
 const router = createRouter({
     history: createWebHistory(),
     routes,
-    scrollBehavior: () => ({ top: 0 })
+    scrollBehavior: () => ({ top: 0 }),
 })
 
 console.log('[Router] Rotas configuradas:', routes)
 
-// Middleware para proteger rotas autenticadas
 router.beforeEach((to, _, next) => {
     console.log(`[Router] Tentando acessar a rota: ${to.path}`)
 
@@ -49,8 +48,7 @@ router.beforeEach((to, _, next) => {
     next()
 })
 
-// Tratamento de erros globais no roteamento
-router.onError(error => {
+router.onError((error) => {
     console.error('[Router] Erro no roteamento:', error)
 })
 

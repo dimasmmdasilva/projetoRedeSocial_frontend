@@ -83,7 +83,7 @@
                         variant="outlined"
                         density="comfortable"
                         class="mt-4 w-75"
-                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                        :rules="[(v) => !!v || 'Este campo é obrigatório']"
                     />
                     <v-text-field
                         v-model="email"
@@ -92,7 +92,7 @@
                         variant="outlined"
                         density="comfortable"
                         class="mt-2 w-75"
-                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                        :rules="[(v) => !!v || 'Este campo é obrigatório']"
                     />
                     <v-text-field
                         v-model="password"
@@ -101,7 +101,7 @@
                         variant="outlined"
                         density="comfortable"
                         class="mt-2 w-75"
-                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                        :rules="[(v) => !!v || 'Este campo é obrigatório']"
                     />
                     <v-text-field
                         v-model="confirmPassword"
@@ -110,7 +110,7 @@
                         variant="outlined"
                         density="comfortable"
                         class="mt-2 w-75"
-                        :rules="[v => !!v || 'Este campo é obrigatório']"
+                        :rules="[(v) => !!v || 'Este campo é obrigatório']"
                     />
 
                     <v-alert v-if="errorMessage" type="error" class="mb-2 w-75">

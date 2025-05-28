@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
         ? 'http://localhost:8000'
         : isDocker
           ? 'http://backend:8000'
-          : ''
+          : env.VITE_API_BASE_URL
 
     console.log(`\n🔹 [Vite Config] Ambiente: ${mode}`)
     console.log(`🔹 [Vite Config] Backend URL definida como: ${backendUrl}\n`)
@@ -29,9 +29,9 @@ export default defineConfig(({ mode }) => {
                 '/api': {
                     target: backendUrl,
                     changeOrigin: true,
-                    secure: false
-                }
-            }
+                    secure: false,
+                },
+            },
         },
         build: {
             outDir: 'dist',
@@ -42,17 +42,17 @@ export default defineConfig(({ mode }) => {
                 output: {
                     assetFileNames: 'assets/[name]-[hash][extname]',
                     chunkFileNames: 'assets/[name]-[hash].js',
-                    entryFileNames: 'assets/[name]-[hash].js'
-                }
-            }
+                    entryFileNames: 'assets/[name]-[hash].js',
+                },
+            },
         },
         resolve: {
             alias: {
-                '@': path.resolve(__dirname, 'src')
-            }
+                '@': path.resolve(__dirname, 'src'),
+            },
         },
         envDir: path.resolve(__dirname, './env'),
         cacheDir: 'vite_cache',
-        publicDir: 'public'
+        publicDir: 'public',
     }
 })

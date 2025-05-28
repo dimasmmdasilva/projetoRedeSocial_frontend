@@ -35,7 +35,7 @@ export const useUserStore = defineStore('user', () => {
                 username,
                 email,
                 password,
-                confirm_password: confirmPassword
+                confirm_password: confirmPassword,
             })
 
             successMessage.value = 'Usuário cadastrado com sucesso!'
@@ -43,7 +43,10 @@ export const useUserStore = defineStore('user', () => {
                 '[UserStore] Cadastro realizado com sucesso:',
                 response.data
             )
-            return { success: true, message: 'Usuário cadastrado com sucesso!' }
+            return {
+                success: true,
+                message: 'Usuário cadastrado com sucesso!',
+            }
         } catch (error: any) {
             console.error(
                 '[UserStore] Erro no registro:',
@@ -126,6 +129,6 @@ export const useUserStore = defineStore('user', () => {
         successMessage,
         registerUser,
         fetchUsers,
-        fetchUserDetails
+        fetchUserDetails,
     }
 })

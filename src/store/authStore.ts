@@ -24,7 +24,7 @@ export const useAuthStore = defineStore('auth', () => {
         followers_count: 0,
         following_count: 0,
         profile_image: '',
-        bio: ''
+        bio: '',
     })
     const token = ref<string>('')
     const refreshTokenValue = ref<string>('')
@@ -104,7 +104,7 @@ export const useAuthStore = defineStore('auth', () => {
         try {
             const response = await api.post('/auth/login/', {
                 username,
-                password
+                password,
             })
 
             if (response.data.access) {
@@ -135,7 +135,7 @@ export const useAuthStore = defineStore('auth', () => {
         console.log('[AuthStore] Realizando logout...')
         try {
             await api.post('/auth/logout/', {
-                refresh: refreshTokenValue.value
+                refresh: refreshTokenValue.value,
             })
         } catch (error) {
             console.warn('[AuthStore] Erro ao deslogar do servidor:', error)
@@ -151,7 +151,7 @@ export const useAuthStore = defineStore('auth', () => {
             followers_count: 0,
             following_count: 0,
             profile_image: '',
-            bio: ''
+            bio: '',
         }
 
         localStorage.removeItem('token')
@@ -177,6 +177,6 @@ export const useAuthStore = defineStore('auth', () => {
         login,
         logout,
         fetchUserData,
-        updateUserData
+        updateUserData,
     }
 })

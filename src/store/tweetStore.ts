@@ -25,7 +25,7 @@ export const useTweetStore = defineStore('tweet', () => {
     // Sincroniza tweets no localStorage quando há mudanças
     watch(
         tweets,
-        newTweets => {
+        (newTweets) => {
             console.log(
                 '[TweetStore] Atualizando localStorage com novos tweets:',
                 newTweets
@@ -97,7 +97,7 @@ export const useTweetStore = defineStore('tweet', () => {
     const deleteTweet = async (tweetId: number): Promise<boolean> => {
         console.log(`[TweetStore] Tentando excluir tweet ID ${tweetId}`)
 
-        const tweetIndex = tweets.value.findIndex(t => t.id === tweetId)
+        const tweetIndex = tweets.value.findIndex((t) => t.id === tweetId)
         if (tweetIndex === -1) {
             console.warn('[TweetStore] Tweet não encontrado:', tweetId)
             return false
@@ -124,7 +124,7 @@ export const useTweetStore = defineStore('tweet', () => {
     const toggleLike = async (tweetId: number): Promise<boolean> => {
         console.log(`[TweetStore] Alternando curtida para tweet ID ${tweetId}`)
 
-        const tweet = tweets.value.find(t => t.id === tweetId)
+        const tweet = tweets.value.find((t) => t.id === tweetId)
         if (!tweet) {
             console.warn('[TweetStore] Tweet não encontrado:', tweetId)
             return false
@@ -162,6 +162,6 @@ export const useTweetStore = defineStore('tweet', () => {
         fetchFollowingTweets,
         createTweet,
         deleteTweet,
-        toggleLike
+        toggleLike,
     }
 })

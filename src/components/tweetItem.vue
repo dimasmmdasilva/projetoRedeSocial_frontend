@@ -8,8 +8,8 @@
     const props = defineProps({
         tweet: {
             type: Object,
-            required: true
-        }
+            required: true,
+        },
     })
 
     const tweetStore = useTweetStore()
@@ -87,7 +87,7 @@
                     {{
                         formatDistanceToNow(new Date(tweet.created_at), {
                             addSuffix: true,
-                            locale: ptBR
+                            locale: ptBR,
                         })
                     }}
                 </span>

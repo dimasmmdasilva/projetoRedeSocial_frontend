@@ -1,2 +1,2 @@
-declare const router: import("vue-router").Router;
-export default router;
+declare const router: import('vue-router').Router
+export default router

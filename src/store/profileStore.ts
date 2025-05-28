@@ -28,7 +28,7 @@ export const useProfileStore = defineStore('profile', () => {
                 '/user/update-profile-image/',
                 formData,
                 {
-                    headers: { 'Content-Type': 'multipart/form-data' }
+                    headers: { 'Content-Type': 'multipart/form-data' },
                 }
             )
 
@@ -71,7 +71,9 @@ export const useProfileStore = defineStore('profile', () => {
         successMessage.value = ''
 
         try {
-            const response = await api.put('/user/update-bio/', { bio: newBio })
+            const response = await api.put('/user/update-bio/', {
+                bio: newBio,
+            })
 
             if (authStore.user) {
                 authStore.user.bio = response.data.bio
@@ -104,6 +106,6 @@ export const useProfileStore = defineStore('profile', () => {
         errorMessage,
         successMessage,
         updateProfileImage,
-        updateBio
+        updateBio,
     }
 })
