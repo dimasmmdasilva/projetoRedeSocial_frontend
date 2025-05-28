@@ -12,7 +12,7 @@ export default defineConfig(({ mode }) => {
         ? 'http://localhost:8000'
         : isDocker
           ? 'http://backend:8000'
-          : 'https://mysocial-backend-w7sl.onrender.com/api/'
+          : ''
 
     console.log(`\n🔹 [Vite Config] Ambiente: ${mode}`)
     console.log(`🔹 [Vite Config] Backend URL definida como: ${backendUrl}\n`)
