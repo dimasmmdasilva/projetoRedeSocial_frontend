@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore.js'
 
-const API_URL = import.meta.env.VITE_API_BASE_URL
+const API_URL = '/api/'
 
 console.log(`[Axios Config] Ambiente: ${import.meta.env.MODE}`)
 console.log(`[Axios Config] Definindo baseURL como: ${API_URL}`)
@@ -18,7 +18,6 @@ api.interceptors.request.use(
         console.log(`[Axios Request] Iniciando requisição para ${config.url}`)
 
         const token = localStorage.getItem('token')
-
         if (token) {
             console.log(
                 '[Axios Request] Token encontrado, adicionando ao header'
@@ -28,7 +27,6 @@ api.interceptors.request.use(
             console.warn('[Axios Request] Nenhum token encontrado')
         }
 
-        // Removendo manualmente o Content-Type para uploads de arquivos
         if (config.headers['Content-Type'] === 'multipart/form-data') {
             console.log(
                 '[Axios Request] Upload detectado, ajustando headers...'
@@ -89,8 +87,8 @@ api.interceptors.response.use(
                 console.warn(
                     '[Axios Response] Token expirado. Tentando renovar...'
                 )
-
                 const newToken = await refreshToken()
+
                 if (newToken) {
                     console.log(
                         '[Axios Response] Reenviando a requisição com o novo token.'
@@ -100,15 +98,11 @@ api.interceptors.response.use(
                 }
 
                 console.warn(
-                    '[Axios Response] Token inválido ou expirado. Redirecionando para login.'
+                    '[Axios Response] Token inválido. Redirecionando para login.'
                 )
-
-                const authStore = useAuthStore()
-                authStore.logout()
+                useAuthStore().logout()
             } else if (status === 403) {
-                console.warn(
-                    '[Axios Response] Acesso negado (403 Forbidden). Verifique permissões.'
-                )
+                console.warn('[Axios Response] Acesso negado (403 Forbidden).')
             } else if (status === 500) {
                 console.error(
                     '[Axios Response] Erro interno do servidor (500).'
