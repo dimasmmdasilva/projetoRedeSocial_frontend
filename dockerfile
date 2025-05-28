@@ -1,23 +1,15 @@
 FROM node:18 AS build
 
 WORKDIR /app
-
-COPY package.json package-lock.json ./
-
-RUN npm ci --frozen-lockfile
-
 COPY . .
 
-RUN npm run build && npm cache clean --force
+RUN npm install
+RUN npm run build
 
-FROM nginx:latest AS deploy
+FROM nginx:stable-alpine
 
-WORKDIR /usr/share/nginx/html
+RUN rm /etc/nginx/conf.d/default.conf
 
-RUN rm -rf ./*
+COPY nginx.conf /etc/nginx/conf.d
 
-COPY --from=build /app/dist/ ./
-
-RUN chmod -R 755 /usr/share/nginx/html
-
-CMD ["nginx", "-g", "daemon off;"]
+COPY --from=build /app/dist /usr/share/nginx/html
