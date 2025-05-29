@@ -1,7 +1,7 @@
 import axios from 'axios'
 import { useAuthStore } from '../store/authStore.js'
 
-const API_URL = '/api/'
+const API_URL = import.meta.env.VITE_API_BASE_URL
 
 console.log(`[Axios Config] Ambiente: ${import.meta.env.MODE}`)
 console.log(`[Axios Config] Definindo baseURL como: ${API_URL}`)
