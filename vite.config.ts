@@ -12,14 +12,14 @@ export default defineConfig(({ mode }) => {
         ? 'http://localhost:8000'
         : isDocker
           ? 'http://backend:8000'
-          : env.VITE_API_BASE_URL
+          : env.VITE_API_BASE_URL || '/api/'
 
     console.log(`\n🔹 [Vite Config] Ambiente: ${mode}`)
     console.log(`🔹 [Vite Config] Backend URL definida como: ${backendUrl}\n`)
 
     return {
         plugins: [vue()],
-        base: isDev ? '/' : './',
+        base: '/',
         server: {
             host: '0.0.0.0',
             port: 5173,
